@@ -8,6 +8,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  MODERATOR
+  USER
+  GUEST
+}
+
 /**
  * ----- User model -----
  * Represents a user in the system.
@@ -21,7 +28,7 @@ model User {
   email     String   @unique
   name      String?
   password  String
-  role      String   @default("USER")
+  role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
