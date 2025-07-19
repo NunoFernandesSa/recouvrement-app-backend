@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import UserServiceError from 'src/errors/user-service.error';
 import { PrismaService } from 'src/prisma.service';
+import { GetUsersDto } from './dto/get-users.dto';
 
 @Injectable()
 export class UserService {
@@ -9,35 +10,41 @@ export class UserService {
   /**
    * Retrieves a list of users from the database.
    *
-   * @returns {Promise<any[]>} A promise that resolves to an array of user objects.
+   * @returns {Promise<GetUsersDto[]>} A promise that resolves to an array of user objects.
    * @throws {UserServiceError} Throws an error if no users are found or if there's a failure during retrieval.
    * @throws {HttpException} Re-throws any HttpException encountered during the process.
    */
-  async getUsers(): Promise<any[]> {
+  async getUsers(): Promise<GetUsersDto[]> {
     try {
-      const users = await this.prisma.user.findMany({
+      const userList = await this.prisma.user.findMany({
         select: {
           id: true,
           email: true,
           name: true,
           role: true,
-          createdAt: true,
-          updatedAt: true,
         },
       });
 
-      if (users.length === 0) {
+      // Transform the data to match the GetUsersDto type
+      const transformedUserList = userList.map((user) => ({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: [user.role], // Convert the enum value to an array of strings
+      }));
+
+      if (transformedUserList.length === 0) {
         throw new UserServiceError('No users found', HttpStatus.NOT_FOUND);
       }
 
-      return users;
-    } catch (e) {
-      if (e instanceof HttpException) {
-        throw e;
+      return transformedUserList;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
       }
 
       throw new UserServiceError(
-        `Failed to retrieve users. Error: ${e.message || e}`,
+        `Failed to retrieve users. Error: ${error.message || error}`,
       );
     }
   }

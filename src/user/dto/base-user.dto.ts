@@ -18,12 +18,14 @@ export class BaseUserDto {
   @IsEmail()
   email: string;
 
+  @IsNotEmpty()
+  @IsString()
   @MinLength(8)
   password: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  name: string;
+  name?: string | null;
 
   @IsArray()
   role: string[];
@@ -38,13 +40,13 @@ export class BaseUserDto {
 
   @IsOptional()
   @IsArray()
-  clients: any[];
+  clients?: any[];
 
   @IsOptional()
   @IsArray()
-  folders: any[];
+  folders?: any[];
 
   @IsOptional()
   @IsArray()
-  debts: any[];
+  debts?: any[];
 }
