@@ -8,11 +8,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ----- role for User -----
 enum Role {
   ADMIN
   MODERATOR
   USER
   GUEST
+}
+
+// ----- state for Actions -----
+enum State {
+  PENDING
+  PAID
+  OVERDUE
+}
+
+enum Type {
+  PROFESSIONAL
+  PERSONAL
 }
 
 /**
@@ -35,6 +48,7 @@ model User {
   clients Client[]
   folders Folder[]
   debts   Debt[]
+  Action  Action[]
 }
 
 /**
@@ -48,16 +62,18 @@ model User {
 model Client {
   id        String   @id @default(cuid())
   name      String
-  email     String   @unique
+  email     String?
+  email2    String?
   phone     String?
   address   String?
   siret     String?
-  type      String   @default("PROFESSIONAL")
+  type      Type     @default(PROFESSIONAL)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   userId String
-  User   User     @relation(fields: [userId], references: [id])
+  User   User   @relation(fields: [userId], references: [id])
+
   Folder Folder[]
 }
 
@@ -79,9 +95,20 @@ model Folder {
 
   clientId String?
   Client   Client? @relation(fields: [clientId], references: [id])
-  Debt     Debt[]
+
+  Debt Debt[]
+
+  actions Action[]
 }
 
+/**
+ * ----- Debt model -----
+ * Represents a debt associated with a user, folder, or client.
+ * Each debt has an amount, a due date, and a status.
+ * The status can be PENDING, PAID, or OVERDUE.
+ * Created and updated timestamps are automatically managed.
+ * Each debt belongs to a user, a folder, or a client.
+ */
 model Debt {
   id        String   @id @default(cuid())
   amount    Float
@@ -97,8 +124,23 @@ model Debt {
   Folder   Folder? @relation(fields: [folderId], references: [id])
 }
 
-// model Action {
-//   id      String   @id @default(cuid())
-//   actions String[]
-//   state   String   @default("PENDING")
-// }
+/**
+ * ----- Action model -----
+ * Represents an action associated with a folder.
+ * Each action has an array of actions, a date, and a state.
+ * The state can be PENDING, APPROVED, or REJECTED.
+ * Created and updated timestamps are automatically managed.
+ * Each action belongs to a user and a folder.
+ */
+model Action {
+  id      String   @id @default(cuid())
+  actions String[]
+  date    DateTime
+  state   State    @default(PENDING)
+
+  folderId String
+  Folder   Folder @relation(fields: [folderId], references: [id])
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id])
+}
