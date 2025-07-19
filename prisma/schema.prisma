@@ -89,3 +89,9 @@ model Debt {
   folderId String?
   Folder   Folder? @relation(fields: [folderId], references: [id])
 }
+
+// model Action {
+//   id      String   @id @default(cuid())
+//   actions String[]
+//   state   String   @default("PENDING")
+// }
