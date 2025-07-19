@@ -6,9 +6,10 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  MinLength,
 } from 'class-validator';
 
-export class UserDto {
+export class BaseUserDto {
   @IsNotEmpty()
   @IsString()
   id: string;
@@ -16,6 +17,9 @@ export class UserDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
+  @MinLength(8)
+  password: string;
 
   @IsNotEmpty()
   @IsString()
