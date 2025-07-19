@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/**
+ * ----- User model -----
+ * Represents a user in the system.
+ * Each user can have multiple clients, folders, and debts.
+ * The user has a unique email and a password for authentication.
+ * The role can be USER or ADMIN, with USER as the default.
+ * Created and updated timestamps are automatically managed.
+ */
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Clients Client[]
+  Folder  Folder[]
+  Debt    Debt[]
+}
+
+/**
+ * ----- Client model -----
+ * Represents a client associated with a user.
+ * Each client has a unique email and can have multiple folders and debts.
+ * The client has a name and can be either a professional or a personal client.
+ * Created and updated timestamps are automatically managed.
+ * Each client belongs to a user.
+ */
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  address   String?
+  siret     String?
+  type      String   @default("PROFESSIONAL")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  User   User     @relation(fields: [userId], references: [id])
+  Folder Folder[]
+}
+
+/**
+ * ----- Folder model -----
+ * Represents a folder associated with a client.
+ * Each folder has a unique reference and can contain multiple debts.
+ * Created and updated timestamps are automatically managed.
+ * Each folder belongs to a user and a client.
+ */
+model Folder {
+  id        String   @id @default(cuid())
+  reference String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id])
+
+  clientId String?
+  Client   Client? @relation(fields: [clientId], references: [id])
+  Debt     Debt[]
+}
+
+model Debt {
+  id        String   @id @default(cuid())
+  amount    Float
+  dueDate   DateTime
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id])
+
+  folderId String?
+  Folder   Folder? @relation(fields: [folderId], references: [id])
+}
