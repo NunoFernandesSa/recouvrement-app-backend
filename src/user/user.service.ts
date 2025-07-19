@@ -3,13 +3,23 @@ import UserServiceError from 'src/errors/user-service.error';
 import { PrismaService } from 'src/prisma.service';
 import { GetUsersDto } from './dto/get-users.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
+import { plainToInstance } from 'class-transformer';
+import { CreateUserResponseDto } from './dto/create-user-response.dto';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createUser(data: CreateUserDto): Promise<CreateUserDto> {
+  /**
+   * Creates a new user in the database.
+   *
+   * @param data The data to create the user with.
+   * @returns {Promise<CreateUserResponseDto>} The created user object without the password.
+   * @throws {UserServiceError} Throws an error if the email and password are not provided, or if a user with the provided email already exists.
+   * @throws {HttpException} Re-throws any HttpException encountered during the process.
+   */
+  async createUser(data: CreateUserDto): Promise<CreateUserResponseDto> {
     /**
      * Checks if the email and password are provided in the request data.
      * If not, throws an error with a custom message and status code.
@@ -52,7 +62,9 @@ export class UserService {
           password: hashedPassword,
         },
       });
-      return user;
+
+      // returns the created user object without the password
+      return plainToInstance(CreateUserResponseDto, user);
     } catch (error) {
       /**
        * If the error is an instance of HttpException, re-throws it to be handled by the controller.
@@ -89,6 +101,10 @@ export class UserService {
         },
       });
 
+      if (userList.length === 0) {
+        throw new UserServiceError('No users found', HttpStatus.NOT_FOUND);
+      }
+
       // Transform the data to match the GetUsersDto type
       const transformedUserList = userList.map((user) => ({
         id: user.id,
@@ -97,11 +113,7 @@ export class UserService {
         role: [user.role], // Convert the enum value to an array of strings
       }));
 
-      if (transformedUserList.length === 0) {
-        throw new UserServiceError('No users found', HttpStatus.NOT_FOUND);
-      }
-
-      return transformedUserList;
+      return plainToInstance(GetUsersDto, transformedUserList);
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
