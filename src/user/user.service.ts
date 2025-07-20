@@ -81,18 +81,12 @@ export class UserService {
       // returns the created user object without the password
       return plainToInstance(CreateUserResponseDto, user);
     } catch (error: unknown) {
-      /**
-       * If the error is an instance of HttpException, re-throws it to be handled by the controller.
-       */
+      // If the error is an instance of HttpException, re-throws it to be handled by the controller.
       if (error instanceof HttpException) {
         throw error;
       }
 
-      console.log('User creation error:', error);
-
-      /**
-       * If the error is not an instance of HttpException, throws a custom error with a custom message and status code.
-       */
+      // If the error is not an instance of HttpException, throws a custom error with a custom message and status code.
       throw new UserServiceError(
         'Failed to create user',
         HttpStatus.INTERNAL_SERVER_ERROR,

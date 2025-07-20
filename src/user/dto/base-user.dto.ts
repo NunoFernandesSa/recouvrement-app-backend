@@ -23,7 +23,6 @@ export class BaseUserDto {
   @IsEmail()
   email: string;
 
-  @Exclude()
   @IsNotEmpty()
   @IsString()
   @MinLength(8)
