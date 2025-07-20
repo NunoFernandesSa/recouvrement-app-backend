@@ -7,6 +7,18 @@ import { CreateUserResponseDto } from '../dtos/create-user-response.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
+/**
+ * Service responsible for creating new users in the application.
+ *
+ * This service handles user creation operations including:
+ * - Validating user input data
+ * - Checking for existing users
+ * - Password hashing
+ * - Database operations
+ *
+ * @class UserCreateService
+ * @injectable
+ */
 export class UserCreateService {
   constructor(private readonly prisma: PrismaService) {}
 
