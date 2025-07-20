@@ -5,6 +5,14 @@ import { GetUsersDto } from '../dtos/get-users.dto';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
+/**
+ * Service responsible for retrieving multiple user records from the database.
+ *
+ * This service provides functionality to fetch a list of users with their basic information
+ * including ID, email, name and role. It handles data transformation and error cases.
+ *
+ * @class UserReadManyService
+ */
 export class UserReadManyService {
   constructor(private readonly prisma: PrismaService) {}
 

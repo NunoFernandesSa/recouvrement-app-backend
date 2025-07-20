@@ -4,6 +4,14 @@ import { PrismaService } from 'src/prisma.service';
 import { GetUsersDto } from '../dtos/get-users.dto';
 
 @Injectable()
+/**
+ * Service responsible for retrieving individual user records from the database.
+ *
+ * This service provides methods to fetch a single user by their unique identifier,
+ * handling all database interactions and error cases appropriately.
+ *
+ * @class UserReadOneService
+ */
 export class UserReadOneService {
   constructor(private readonly prisma: PrismaService) {}
 

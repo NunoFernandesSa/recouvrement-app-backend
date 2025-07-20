@@ -12,6 +12,17 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 
 @Injectable()
+/**
+ * Service responsible for handling user update and deletion operations.
+ *
+ * This service provides methods to:
+ * - Update existing user information (name, email, role)
+ * - Delete users from the system
+ * - Validate email uniqueness
+ *
+ * It uses Prisma as the database ORM and implements various error checks
+ * to ensure data integrity and proper error handling.
+ */
 export class UserUpdateService {
   constructor(private readonly prisma: PrismaService) {}
 

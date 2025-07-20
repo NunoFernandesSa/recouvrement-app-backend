@@ -7,6 +7,12 @@ import UserServiceError from 'src/errors/user-service.error';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
+/**
+ * Service responsible for handling user deletion operations.
+ *
+ * This service provides functionality to safely remove users from the system
+ * while handling various edge cases and maintaining data integrity.
+ */
 export class UserDeleteService {
   constructor(private readonly prisma: PrismaService) {}
 
