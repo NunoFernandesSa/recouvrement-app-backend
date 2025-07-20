@@ -161,6 +161,8 @@ export class UserService {
           email: true,
           name: true,
           role: true,
+          createdAt: true,
+          updatedAt: true,
         },
       });
 
@@ -177,6 +179,8 @@ export class UserService {
         email: user.email,
         name: user.name,
         role: user.role, // Convert the Role enum to an array of strings
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       };
     } catch (error) {
       if (error instanceof HttpException) {
@@ -228,7 +232,10 @@ export class UserService {
     if (updateUserDto.email && updateUserDto.email !== existingUser.email) {
       const emailTaken = await this.emailExists(updateUserDto.email, id);
       if (emailTaken) {
-        throw new UserServiceError('Email already in use', HttpStatus.CONFLICT);
+        throw new UserServiceError(
+          'This email address is already associated with an account. Please use a different email address.',
+          HttpStatus.CONFLICT,
+        );
       }
     }
 
