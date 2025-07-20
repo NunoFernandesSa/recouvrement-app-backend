@@ -1,3 +1,4 @@
+import { UpdateUserDto } from './dto/update-user.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import UserServiceError from 'src/errors/user-service.error';
 import { PrismaService } from 'src/prisma.service';
@@ -6,6 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { plainToInstance } from 'class-transformer';
 import { CreateUserResponseDto } from './dto/create-user-response.dto';
 import bcrypt from 'bcrypt';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UserService {
@@ -148,7 +150,7 @@ export class UserService {
    * @throws {UserServiceError} Throws an error if the user is not found or if there's a failure during retrieval.
    * @throws {HttpException} Re-throws any HttpException encountered during the process.
    */
-  async getUserById(id: string): Promise<GetUsersDto | null> {
+  async getUserById(id: string): Promise<GetUsersDto> {
     try {
       const user = await this.prisma.user.findUnique({
         where: { id },
@@ -172,7 +174,7 @@ export class UserService {
         id: user.id,
         email: user.email,
         name: user.name,
-        role: [user.role], // Convert the Role enum to an array of strings
+        role: user.role, // Convert the Role enum to an array of strings
       };
     } catch (error) {
       if (error instanceof HttpException) {
@@ -183,5 +185,108 @@ export class UserService {
         `Failed to retrieve user. Error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
+  }
+
+  /**
+   * Updates an existing user's information in the database.
+   *
+   * @param {string} id The ID of the user to update
+   * @param {UpdateUserDto} updateUserDto The data to update the user with
+   * @returns {Promise<CreateUserResponseDto>} The updated user object
+   * @throws {UserServiceError} Throws an error if the user is not found or if there's a failure during update
+   * @throws {HttpException} Re-throws any HttpException encountered during the process
+   */
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<CreateUserResponseDto> {
+    // ----- Check if the user exists -----
+    const existingUser = await this.prisma.user.findUnique({ where: { id } });
+    if (!existingUser) {
+      throw new UserServiceError('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    // ----- Check if the email is already taken by other user -----
+    if (updateUserDto.email && existingUser.email !== existingUser.email) {
+      const emailTaken = await this.emailExists(updateUserDto.email, id);
+      if (emailTaken) {
+        throw new UserServiceError('Email already in use', HttpStatus.CONFLICT);
+      }
+    }
+
+    // ----- Update the user -----
+    try {
+      const updatedUser = await this.prisma.user.update({
+        where: { id },
+        data: {
+          name: updateUserDto.name ?? existingUser.name ?? null,
+          email: updateUserDto.email ?? existingUser.email,
+          role: updateUserDto.role ?? existingUser.role,
+        },
+      });
+
+      // ----- returns the updated user object without the password -----
+      const userDataUpdated = plainToInstance(
+        CreateUserResponseDto,
+        updatedUser,
+        {
+          excludeExtraneousValues: true,
+        },
+      );
+      return userDataUpdated;
+    } catch (error: unknown) {
+      // Prisma error handling
+      if (error instanceof PrismaClientKnownRequestError) {
+        // Code d'erreur de contrainte unique
+        if (error.code === 'P2002') {
+          throw new UserServiceError(
+            'Email already in use',
+            HttpStatus.CONFLICT, // 409
+          );
+        }
+      }
+
+      // Other errors
+      if (error instanceof Error) {
+        throw new UserServiceError(
+          `Failed to update user. Error: ${error.message}`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      // Unknown errors
+      /**
+       * If the error is not an instance of HttpException, throws a custom error with a custom message and status code.
+       */
+      throw new UserServiceError(
+        'Failed to update user due to unknown error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  // ----|||-------------------------|||----
+  // ----|||---- Private methods ----|||----
+  // ----|||-------------------------|||----
+
+  /**
+   * Checks if an email already exists in the database.
+   *
+   * @param {string} email - The email to check.
+   * @param {string} [excludeUserId] - The ID of the user to exclude from the check.
+   * @returns {Promise<boolean>} - A promise that resolves to true if the email exists, false otherwise.
+   */
+  private async emailExists(
+    email: string,
+    excludeUserId?: string,
+  ): Promise<boolean> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email,
+        NOT: { id: excludeUserId },
+      },
+    });
+
+    return !!user; // true si un utilisateur est trouvé
   }
 }
