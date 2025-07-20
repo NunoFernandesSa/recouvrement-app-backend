@@ -1,4 +1,4 @@
-import { GetUsersDto } from '../../user/dto/get-users.dto';
+import { GetUsersDto } from '../../user/dtos/get-users.dto';
 import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
