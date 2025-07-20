@@ -8,4 +8,6 @@ export class GetUsersDto extends OmitType(BaseUserDto, [
   'clients',
   'folders',
   'debts',
+  'actions',
+  'actionDetails',
 ] as const) {}

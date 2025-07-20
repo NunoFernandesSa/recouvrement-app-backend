@@ -49,4 +49,12 @@ export class BaseUserDto {
   @IsOptional()
   @IsArray()
   debts?: any[];
+
+  @IsOptional()
+  @IsArray()
+  actions: any[];
+
+  @IsOptional()
+  @IsArray()
+  actionDetails: any[];
 }

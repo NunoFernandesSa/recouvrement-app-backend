@@ -9,23 +9,31 @@ datasource db {
 }
 
 // ----- role for User -----
-enum Role {
+enum UserRole {
   ADMIN
   MODERATOR
   USER
   GUEST
 }
 
+// ----- type for Client -----
+enum ClientType {
+  PROFESSIONAL
+  PERSONAL
+}
+
 // ----- state for Actions -----
-enum State {
+enum ActionState {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// ----- state for Debt -----
+enum DebtState {
   PENDING
   PAID
   OVERDUE
-}
-
-enum Type {
-  PROFESSIONAL
-  PERSONAL
 }
 
 /**
@@ -41,14 +49,15 @@ model User {
   email     String   @unique
   name      String?
   password  String
-  role      Role     @default(USER)
+  role      UserRole @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  clients Client[]
-  folders Folder[]
-  debts   Debt[]
-  Action  Action[]
+  clients       Client[]
+  folders       Folder[]
+  debts         Debt[]
+  actions       Action[]
+  actionDetails ActionDetail[]
 }
 
 /**
@@ -60,21 +69,21 @@ model User {
  * Each client belongs to a user.
  */
 model Client {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   name      String
   email     String?
   email2    String?
   phone     String?
   address   String?
   siret     String?
-  type      Type     @default(PROFESSIONAL)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  type      ClientType @default(PROFESSIONAL)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   userId String
   User   User   @relation(fields: [userId], references: [id])
 
-  Folder Folder[]
+  folders Folder[]
 }
 
 /**
@@ -86,19 +95,20 @@ model Client {
  */
 model Folder {
   id        String   @id @default(cuid())
-  reference String
+  reference String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   userId String
   User   User   @relation(fields: [userId], references: [id])
 
-  clientId String?
-  Client   Client? @relation(fields: [clientId], references: [id])
+  clientId String
+  Client   Client @relation(fields: [clientId], references: [id])
 
-  Debt Debt[]
+  debt Debt[]
 
-  actions Action[]
+  actions       Action[]
+  actionDetails ActionDetail[]
 }
 
 /**
@@ -110,37 +120,61 @@ model Folder {
  * Each debt belongs to a user, a folder, or a client.
  */
 model Debt {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   amount    Float
   dueDate   DateTime
-  status    String   @default("PENDING")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  state     DebtState @default(PENDING)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   userId String
   User   User   @relation(fields: [userId], references: [id])
 
-  folderId String?
-  Folder   Folder? @relation(fields: [folderId], references: [id])
+  folderId String
+  folder   Folder @relation(fields: [folderId], references: [id])
 }
 
 /**
  * ----- Action model -----
  * Represents an action associated with a folder.
- * Each action has an array of actions, a date, and a state.
+ * Each action has a date when it occurred and a state.
+ * Contains details about actions taken through ActionDetail model.
  * The state can be PENDING, APPROVED, or REJECTED.
- * Created and updated timestamps are automatically managed.
- * Each action belongs to a user and a folder.
+ * Each action belongs to a user who performed it and a folder it relates to.
+ * Actions can have multiple details describing specific activities performed.
  */
 model Action {
-  id      String   @id @default(cuid())
-  actions String[]
-  date    DateTime
-  state   State    @default(PENDING)
+  id    String      @id @default(cuid())
+  date  DateTime
+  state ActionState @default(PENDING)
 
   folderId String
   Folder   Folder @relation(fields: [folderId], references: [id])
 
   userId String
   User   User   @relation(fields: [userId], references: [id])
+
+  details ActionDetail[]
+}
+
+/**
+ * ----- ActionDetail model -----
+ * Represents details of an action performed.
+ * Each detail contains information about the type of action, a comment, and timestamps.
+ * Each detail belongs to an action and can be associated with a user or a folder.
+ */
+model ActionDetail {
+  id         String   @id @default(cuid())
+  actionType String // ex: "EMAIL_SENT", "CALL_MADE", etc.
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  actionId String
+  action   Action @relation(fields: [actionId], references: [id])
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  Folder   Folder @relation(fields: [folderId], references: [id])
+  folderId String
 }

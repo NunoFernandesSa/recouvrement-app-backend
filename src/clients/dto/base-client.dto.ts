@@ -25,7 +25,7 @@ export class BaseClientDto {
 
   @IsOptional()
   @IsEmail()
-  email2: string;
+  email2: string | null;
 
   @IsOptional()
   @IsString()

@@ -3,9 +3,9 @@ import UserServiceError from 'src/errors/user-service.error';
 import { PrismaService } from 'src/prisma.service';
 import { GetUsersDto } from './dto/get-users.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 import { CreateUserResponseDto } from './dto/create-user-response.dto';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -49,12 +49,25 @@ export class UserService {
     }
 
     /**
-     * Hashes the password using bcrypt and creates a new user in the database.
-     * Returns the created user object.
+     * Hashes the password using bcrypt.
+     * If the hashing fails, throws an error with a custom message and status code.
+     */
+    let hashedPassword: string;
+    try {
+      hashedPassword = await bcrypt.hash(data.password, 10);
+    } catch (error: unknown) {
+      console.log('Hashing error:', error);
+      throw new UserServiceError(
+        'Failed to hash password',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    /**
+     * Creates a new user in the database with the provided data.
+     * If the creation fails, throws an error with a custom message and status code.
      */
     try {
-      const hashedPassword = await bcrypt.hash(data.password, 10);
-
       const user = await this.prisma.user.create({
         data: {
           name: data.name ?? null,
@@ -65,13 +78,15 @@ export class UserService {
 
       // returns the created user object without the password
       return plainToInstance(CreateUserResponseDto, user);
-    } catch (error) {
+    } catch (error: unknown) {
       /**
        * If the error is an instance of HttpException, re-throws it to be handled by the controller.
        */
       if (error instanceof HttpException) {
         throw error;
       }
+
+      console.log('User creation error:', error);
 
       /**
        * If the error is not an instance of HttpException, throws a custom error with a custom message and status code.
@@ -120,7 +135,7 @@ export class UserService {
       }
 
       throw new UserServiceError(
-        `Failed to retrieve users. Error: ${error.message || error}`,
+        `Failed to retrieve users. Error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
@@ -159,13 +174,13 @@ export class UserService {
         name: user.name,
         role: [user.role], // Convert the Role enum to an array of strings
       };
-    } catch (e) {
-      if (e instanceof HttpException) {
-        throw e;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
       }
 
       throw new UserServiceError(
-        `Failed to retrieve user. Error: ${e.message || e}`,
+        `Failed to retrieve user. Error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
