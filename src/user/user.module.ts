@@ -20,5 +20,6 @@ import { UserDeleteService } from './services/user-delete.service';
     UserUpdateService,
     UserDeleteService,
   ],
+  exports: [UserService],
 })
 export class UserModule {}
