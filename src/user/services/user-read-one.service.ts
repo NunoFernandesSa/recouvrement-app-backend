@@ -25,7 +25,7 @@ export class UserReadOneService {
    */
   async getUserById(id: string): Promise<GetUsersDto> {
     try {
-      const user = await this.prisma.user.findUnique({
+      const user = (await this.prisma.user.findUnique({
         where: { id },
         select: {
           id: true,
@@ -36,7 +36,7 @@ export class UserReadOneService {
           createdAt: true,
           updatedAt: true,
         },
-      });
+      })) as GetUsersDto;
 
       if (!user) {
         throw new UserServiceError('User not found', HttpStatus.NOT_FOUND);
@@ -55,7 +55,7 @@ export class UserReadOneService {
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof HttpException) {
         throw error;
       }
