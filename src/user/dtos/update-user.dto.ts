@@ -5,7 +5,7 @@ import { UserRole } from 'generated/prisma';
 import { Exclude } from 'class-transformer';
 
 export class UpdateUserDto extends PartialType(
-  OmitType(BaseUserDto, ['id', 'password', 'createdAt', 'updatedAt'] as const),
+  OmitType(BaseUserDto, ['password', 'createdAt'] as const),
 ) {
   @IsOptional()
   @IsEnum(UserRole)

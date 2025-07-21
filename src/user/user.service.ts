@@ -31,7 +31,7 @@ export class UserService {
     return await this.getUserById.getUserById(id);
   }
 
-  async update(id: string, dto: UpdateUserDto): Promise<CreateUserResponseDto> {
+  async update(id: string, dto: UpdateUserDto): Promise<UpdateUserDto> {
     return await this.updateUser.updateUser(id, dto);
   }
 
