@@ -1,8 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthBody } from './auth.controller';
 import { PrismaService } from 'src/prisma.service';
-
-import { isPasswordValid } from './utils';
+import { isPasswordValid } from 'src/utils/is-password-valid';
 
 @Injectable()
 export class AuthService {
