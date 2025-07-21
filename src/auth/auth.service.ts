@@ -1,13 +1,17 @@
+import { JwtService } from '@nestjs/jwt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthBody } from './auth.controller';
 import { PrismaService } from 'src/prisma.service';
 import { isPasswordValid } from 'src/utils/is-password-valid';
+import { LoginDto } from './dtos/login.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  async login({ authBody }: { authBody: AuthBody }): Promise<any> {
+  async login(authBody: LoginDto): Promise<any> {
     // ----- Validate the user credentials -----
 
     try {
@@ -37,9 +41,27 @@ export class AuthService {
         throw new UnauthorizedException('Invalid password');
       }
 
-      return { user: existingUser.email };
+      return await this.authenticateUser(existingUser.id);
     } catch (error: unknown) {
-      throw new UnauthorizedException(error, 'Invalid credentials');
+      const message =
+        error instanceof Error ? error.message : 'Invalid credentials';
+      throw new UnauthorizedException(message);
     }
+  }
+
+  // -----|||-------------------------|||----
+  // -----|||---- Private methods ----|||----
+  // -----|||-------------------------|||----
+
+  /**
+   * Authenticates a user and generates a JWT access token
+   * @param userId - The unique identifier of the user to authenticate
+   * @returns A promise that resolves to an object containing the JWT access token
+   * @throws {UnauthorizedException} If the authentication fails
+   */
+  async authenticateUser(userId: string): Promise<{ access_token: string }> {
+    const payload = { userId };
+    const token = await this.jwtService.signAsync(payload);
+    return { access_token: token };
   }
 }
