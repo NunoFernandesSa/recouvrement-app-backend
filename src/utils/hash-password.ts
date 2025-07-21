@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
  * @param {string} params.password - The plain text password to hash
  * @returns {Promise<string>} Promise that resolves to the hashed password string
  */
-export const hashPassword = async ({ password }: { password: string }) => {
+export const hashPassword = async (password: string): Promise<string> => {
   const hashedPassword = await bcrypt.hash(password, 10);
   return hashedPassword;
 };

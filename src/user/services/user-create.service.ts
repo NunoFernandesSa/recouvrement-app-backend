@@ -4,7 +4,8 @@ import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { plainToInstance } from 'class-transformer';
 import { CreateUserResponseDto } from '../dtos/create-user-response.dto';
-import * as bcrypt from 'bcrypt';
+
+import { hashPassword } from 'src/utils/hash-password';
 
 @Injectable()
 /**
@@ -68,7 +69,7 @@ export class UserCreateService {
        * Hashes the password using bcrypt.
        * If the hashing fails, throws an error with a custom message and status code.
        */
-      const hashedPassword = await bcrypt.hash(data.password, 10);
+      const hashedPassword = await hashPassword(data.password);
 
       if (!hashedPassword) {
         throw new UserServiceError(
