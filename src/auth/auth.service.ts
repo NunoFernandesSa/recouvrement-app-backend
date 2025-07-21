@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthBody } from './auth.controller';
 import { PrismaService } from 'src/prisma.service';
 
-import { hashPassword, isPasswordValid } from './utils';
+import { isPasswordValid } from './utils';
 
 @Injectable()
 export class AuthService {
@@ -12,12 +12,6 @@ export class AuthService {
     // ----- Validate the user credentials -----
 
     try {
-      // Hash the password
-      const hashedPassword = await hashPassword({
-        password: authBody.password,
-      });
-      console.log('Mot de passe:', hashedPassword, authBody.password);
-
       // Find the user by email
       const existingUser = await this.prisma.user.findUnique({
         where: { email: authBody.email },
@@ -39,6 +33,7 @@ export class AuthService {
         existingUser.password,
       );
 
+      // if password is not valid, throw an error
       if (!isThisPasswordValid) {
         throw new UnauthorizedException('Invalid password');
       }
