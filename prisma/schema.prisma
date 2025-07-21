@@ -8,7 +8,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ----- role for User -----
+/**
+ * -----||------------||-----
+ * --------- Enum's ---------
+ * -----||------------||-----
+ */
+
+// ----- enum role for User -----
 enum UserRole {
   ADMIN
   MODERATOR
@@ -16,20 +22,43 @@ enum UserRole {
   GUEST
 }
 
-// ----- type for Client -----
+// ----- enum type for Client -----
 enum ClientType {
   PROFESSIONAL
   PERSONAL
 }
 
-// ----- state for Actions -----
+// ----- enum type for Debtor -----
+enum DebtorType {
+  PROFESSIONAL
+  PERSONAL
+}
+
+// ----- enum status for Debtor -----
+enum DebtorStatus {
+  ACTIVE
+  INACTIVE
+  PAST_DUE
+}
+
+// ----- enum state for Actions -----
 enum ActionState {
   PENDING
   APPROVED
   REJECTED
 }
 
-// ----- state for Debt -----
+// ----- enum type for ActionDetail -----
+enum ActionDetailType {
+  EMAIL
+  CALL
+  SMS
+  LETTER
+  VISIT
+  OTHER
+}
+
+// ----- enum state for Debt -----
 enum DebtState {
   PENDING
   PAID
@@ -37,144 +66,241 @@ enum DebtState {
 }
 
 /**
+ * -----||------------||-----
+ * --------- Models ---------
+ * -----||------------||-----
+ */
+
+/**
  * ----- User model -----
- * Represents a user in the system.
- * Each user can have multiple clients, folders, and debts.
+ * Represents a user in the debt collection system.
+ * Each user can have multiple clients and can perform actions.
  * The user has a unique email and a password for authentication.
- * The role can be USER or ADMIN, with USER as the default.
+ * The role can be ADMIN, MODERATOR, USER or GUEST, with USER as the default.
  * Created and updated timestamps are automatically managed.
+ * Fields:
+ * - id: Unique identifier (CUID)
+ * - email: Unique email address for login
+ * - name: Optional user's name
+ * - password: Hashed password for authentication
+ * - role: User access level (ADMIN/MODERATOR/USER/GUEST)
+ * - createdAt: Timestamp of user creation
+ * - updatedAt: Timestamp of last update
+ * Relations:
+ * - clients: One-to-many relation with Client model
+ * - actions: One-to-many relation with Action model
+ * - actionDetails: One-to-many relation with ActionDetail model
  */
 model User {
   id        String   @id @default(cuid())
-  email     String   @unique
+  email     String   @unique @db.VarChar(255)
   name      String?
-  password  String
+  password  String   @db.VarChar(255)
   role      UserRole @default(USER)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  clients       Client[]
-  folders       Folder[]
-  debts         Debt[]
-  actions       Action[]
-  actionDetails ActionDetail[]
+  // ----- relations -----
+
+  clients Client[]
+  actions Action[]
 }
 
 /**
  * ----- Client model -----
- * Represents a client associated with a user.
- * Each client has a unique email and can have multiple folders and debts.
- * The client has a name and can be either a professional or a personal client.
- * Created and updated timestamps are automatically managed.
- * Each client belongs to a user.
+ * Represents a client in the debt collection system.
+ * Each client has:
+ * - Unique identifier (CUID) and internal reference number
+ * - Contact info (name, email array, phone array, address)
+ * - Location details (city, zipcode, country)
+ * - Type (PROFESSIONAL/PERSONAL) with PROFESSIONAL as default
+ * - SIRET number for professional clients
+ * - Notes array for additional information
+ * - Timestamps for creation and updates
+ * Fields:
+ * - id: Unique identifier (CUID)
+ * - internalRef: Unique internal reference
+ * - name: Client's name
+ * - email: Array of email addresses
+ * - phone: Array of phone numbers
+ * - address/city/zipcode/country: Optional location info
+ * - siret: Optional SIRET number for professional clients
+ * - type: PROFESSIONAL (default) or PERSONAL
+ * Relations:
+ * - user: Many-to-one with User
+ * - debtor: One-to-many with Debtor
  */
 model Client {
-  id        String     @id @default(cuid())
-  name      String
-  email     String?
-  email2    String?
-  phone     String?
-  address   String?
-  siret     String?
-  type      ClientType @default(PROFESSIONAL)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id          String     @id @default(cuid())
+  internalRef String     @unique @db.VarChar(255)
+  name        String
+  email       String[]
+  phone       String[]
+  address     String?
+  city        String?
+  zipcode     String?
+  country     String?
+  siret       String?    @db.VarChar(255)
+  type        ClientType @default(PROFESSIONAL)
+  notes       String[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // ----- relations -----
 
   userId String
-  User   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
-  folders Folder[]
+  debtor Debtor[]
 }
 
 /**
- * ----- Folder model -----
- * Represents a folder associated with a client.
- * Each folder has a unique reference and can contain multiple debts.
- * Created and updated timestamps are automatically managed.
- * Each folder belongs to a user and a client.
+ * ----- Debtor model -----
+ * Represents a debtor in the debt collection system.
+ * Each debtor has:
+ * - Unique identifier (CUID) and reference number
+ * - Contact info (name, email, phone, address)
+ * - Type (PROFESSIONAL/PERSONAL) and status (ACTIVE/INACTIVE/PAST_DUE)
+ * - Timestamps for creation and updates
+ * Fields:
+ * - id: Unique identifier (CUID)
+ * - reference: Unique reference number
+ * - name: Debtor's name
+ * - email: Array of email addresses
+ * - phone: Optional phone number
+ * - address/city/zipcode/country: Optional location info
+ * - siret: Optional SIRET number for professional debtors
+ * - type: PROFESSIONAL (default) or PERSONAL
+ * - status: ACTIVE (default), INACTIVE, or PAST_DUE
+ * Relations:
+ * - client: Many-to-one with Client
+ * - actions: One-to-many with Action
+ * - debt: One-to-many with Debt
  */
-model Folder {
-  id        String   @id @default(cuid())
-  reference String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Debtor {
+  id        String       @id @default(cuid())
+  reference String       @unique @db.VarChar(255)
+  name      String
+  email     String[]
+  phone     String?
+  address   String?
+  city      String?
+  zipcode   String?
+  country   String?
+  siret     String?      @db.VarChar(255)
+  type      DebtorType   @default(PROFESSIONAL)
+  status    DebtorStatus @default(ACTIVE)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
-  userId String
-  User   User   @relation(fields: [userId], references: [id])
+  // ----- relations -----
 
   clientId String
-  Client   Client @relation(fields: [clientId], references: [id])
+  client   Client @relation(fields: [clientId], references: [id])
 
-  debt Debt[]
-
-  actions       Action[]
-  actionDetails ActionDetail[]
+  actions Action[]
+  debt    Debt[]
 }
 
 /**
  * ----- Debt model -----
- * Represents a debt associated with a user, folder, or client.
- * Each debt has an amount, a due date, and a status.
- * The status can be PENDING, PAID, or OVERDUE.
+ * Represents a debt record in the debt collection system.
+ * Each debt has amounts (HT excluding tax, TTC including tax, paid, remaining, overdue), a due date, and a state.
+ * The state can be PENDING (awaiting payment), PAID (fully settled), or OVERDUE (past due date).
  * Created and updated timestamps are automatically managed.
- * Each debt belongs to a user, a folder, or a client.
+ * Each debt is associated with a debtor and tracks payment progress.
+ * Amounts are stored as Decimal values with 2 decimal places for precise financial calculations.
+ * The dueDate field helps determine if a debt becomes overdue.
+ * Optional invoice number and notes fields for additional tracking.
  */
 model Debt {
-  id        String    @id @default(cuid())
-  amount    Float
-  dueDate   DateTime
-  state     DebtState @default(PENDING)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id              String    @id @default(cuid())
+  amountHT        Decimal   @db.Decimal(10, 2)
+  amountTTC       Decimal   @db.Decimal(10, 2)
+  amountPaid      Decimal?  @default(0) @db.Decimal(10, 2)
+  amountRemaining Decimal?  @db.Decimal(10, 2)
+  amountOverdue   Decimal?  @db.Decimal(10, 2)
+  invoiceNumber   String?   @db.VarChar(255)
+  dueDate         DateTime
+  state           DebtState @default(PENDING)
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
-  userId String
-  User   User   @relation(fields: [userId], references: [id])
+  // ----- relations -----
 
-  folderId String
-  folder   Folder @relation(fields: [folderId], references: [id])
+  debtorId String
+  debtor   Debtor @relation(fields: [debtorId], references: [id])
 }
 
 /**
  * ----- Action model -----
- * Represents an action associated with a folder.
- * Each action has a date when it occurred and a state.
- * Contains details about actions taken through ActionDetail model.
- * The state can be PENDING, APPROVED, or REJECTED.
- * Each action belongs to a user who performed it and a folder it relates to.
- * Actions can have multiple details describing specific activities performed.
+ * Represents an action taken in the debt collection process.
+ * Each action has:
+ * - A title and optional description
+ * - A state (PENDING, APPROVED, or REJECTED)
+ * - Optional due date and completion date
+ * - Created and updated timestamps (auto-managed)
+ * The action is linked to:
+ * - A debtor (required)
+ * - An optional user who is assigned to it
+ * - Multiple action details documenting specific activities
+ * Action details can include:
+ * - Communication records (emails, calls, SMS)
+ * - Physical actions (letters, visits)
+ * - Other collection-related activities
+ * Relations:
+ * - debtor: Many-to-one with Debtor
+ * - user: Optional many-to-one with User
+ * - details: One-to-many with ActionDetail
  */
 model Action {
-  id    String      @id @default(cuid())
-  date  DateTime
-  state ActionState @default(PENDING)
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  state       ActionState @default(PENDING)
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
-  folderId String
-  Folder   Folder @relation(fields: [folderId], references: [id])
+  // ----- relations -----
 
-  userId String
-  User   User   @relation(fields: [userId], references: [id])
+  debtorId String
+  debtor   Debtor @relation(fields: [debtorId], references: [id])
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
 
   details ActionDetail[]
 }
 
 /**
  * ----- ActionDetail model -----
- * Represents details of an action performed.
- * Each detail contains information about the type of action, a comment, and timestamps.
- * Each detail belongs to an action and can be associated with a user or a folder.
+ * Represents details of an action performed in the debt collection process.
+ * Each detail contains information about the type of action (e.g., EMAIL, CALL, SMS, LETTER, VISIT, OTHER),
+ * an optional note for additional context, and timestamps for tracking.
+ * Each detail belongs to an action and can be associated with both a user who performed it
+ * and a debtor it relates to.
+ * Fields:
+ * - id: Unique identifier (CUID)
+ * - type: Type of action detail (EMAIL/CALL/SMS/LETTER/VISIT/OTHER)
+ * - note: Optional additional information
+ * - createdAt: Timestamp of creation
+ * - updatedAt: Timestamp of last update
+ * Relations:
+ * - action: Many-to-one relation with Action model
  */
 model ActionDetail {
-  id         String   @id @default(cuid())
-  actionType String // ex: "EMAIL_SENT", "CALL_MADE", etc.
-  comment    String?
-  createdAt  DateTime @default(now())
+  id        String           @id @default(cuid())
+  type      ActionDetailType
+  note      String?          @db.VarChar(255)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  // ----- relations -----
 
   actionId String
   action   Action @relation(fields: [actionId], references: [id])
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-
-  Folder   Folder @relation(fields: [folderId], references: [id])
-  folderId String
 }

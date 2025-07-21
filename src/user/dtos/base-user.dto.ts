@@ -1,6 +1,7 @@
-import { Exclude, Expose, Type } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsDate,
   IsEmail,
   IsEnum,
@@ -38,6 +39,11 @@ export class BaseUserDto {
   role: UserRole;
 
   @Expose()
+  @IsBoolean()
+  @IsNotEmpty()
+  isActive: boolean;
+
+  @Expose()
   @Type(() => Date)
   @IsDate()
   createdAt: Date;
@@ -55,20 +61,5 @@ export class BaseUserDto {
   @Expose()
   @IsOptional()
   @IsArray()
-  folders?: any[];
-
-  @Expose()
-  @IsOptional()
-  @IsArray()
-  debts?: any[];
-
-  @Expose()
-  @IsOptional()
-  @IsArray()
   actions: any[];
-
-  @Expose()
-  @IsOptional()
-  @IsArray()
-  actionDetails: any[];
 }

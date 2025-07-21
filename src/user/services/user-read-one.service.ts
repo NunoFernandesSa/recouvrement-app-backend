@@ -32,6 +32,7 @@ export class UserReadOneService {
           email: true,
           name: true,
           role: true,
+          isActive: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -50,6 +51,7 @@ export class UserReadOneService {
         email: user.email,
         name: user.name,
         role: user.role, // Convert the Role enum to an array of strings
+        isActive: user.isActive,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       };
