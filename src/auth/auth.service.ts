@@ -8,7 +8,7 @@ import { isPasswordValid } from './utils';
 export class AuthService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async login({ authBody }: { authBody: AuthBody }): Promise<void> {
+  async login({ authBody }: { authBody: AuthBody }): Promise<any> {
     // ----- Validate the user credentials -----
 
     try {
@@ -37,6 +37,8 @@ export class AuthService {
       if (!isThisPasswordValid) {
         throw new UnauthorizedException('Invalid password');
       }
+
+      return { user: existingUser.email };
     } catch (error: unknown) {
       throw new UnauthorizedException(error, 'Invalid credentials');
     }
