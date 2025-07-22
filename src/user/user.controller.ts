@@ -12,12 +12,17 @@ import { GetUsersDto } from './dtos/get-users.dto';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { CreateUserResponseDto } from './dtos/create-user-response.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('create')
+  @Post('new')
+  @ApiOperation({
+    summary: 'Create a new user',
+    description: 'Create a new user with the provided details',
+  })
   async createUser(@Body() dto: CreateUserDto): Promise<CreateUserResponseDto> {
     return await this.userService.create(dto);
   }

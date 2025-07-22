@@ -12,7 +12,7 @@ async function bootstrap() {
   // swagger
   const config = new DocumentBuilder()
     .setTitle('CRUD API')
-    .setDescription('CRUD API for debt collection')
+    .setDescription('CRUD API for debt collection management')
     .setVersion('1.0')
     .addTag('debt collection')
     .build();
