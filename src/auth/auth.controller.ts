@@ -26,8 +26,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({ summary: 'User login', description: 'User login' })
-  async login(@Body() loginDto: Record<string, any>): Promise<any> {
-    return await this.authService.userLogin(loginDto as LoginDto);
+  async login(@Body() loginDto: LoginDto): Promise<any> {
+    return await this.authService.userLogin(loginDto);
+  }
+
+  @Post('register')
+  @ApiOperation({ summary: 'User register', description: 'User register' })
+  async register(@Body() loginDto: LoginDto): Promise<any> {
+    return await this.authService.userLogin(loginDto);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -1,26 +1,20 @@
 import { JwtService } from '@nestjs/jwt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { isPasswordValid } from 'src/utils/is-password-valid';
+import { hashPassword } from 'src/utils/hash-password';
 import { LoginDto } from '../dtos/login.dto';
 import { UserPayload } from 'src/auth/jwt.strategy';
 
 @Injectable()
-export class AuthLoginService {
+export class AuthRegisterService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
   ) {}
 
-  /**
-   * Authenticates a user with their email and password
-   * @param authBody - The login credentials containing email and password
-   * @returns A promise that resolves to an object containing the JWT access token
-   * @throws {UnauthorizedException} If the credentials are invalid, user doesn't exist,
-   *         user is inactive, or password is incorrect
-   */
-  async login(authBody: LoginDto): Promise<any> {
+  async register(authBody: LoginDto): Promise<any> {
     // ----- Validate the user credentials -----
+
     try {
       // Find the user by email
       const existingUser = await this.prisma.user.findUnique({
@@ -37,21 +31,21 @@ export class AuthLoginService {
         throw new UnauthorizedException('This user is not active');
       }
 
-      // Check if the password is correct
-      const isThisPasswordValid = await isPasswordValid(
-        authBody.password,
-        existingUser.password,
-      );
+      const hashUserPassword = hashPassword(authBody.password);
 
-      // if password is not valid, throw an error
-      if (!isThisPasswordValid) {
-        throw new UnauthorizedException('Invalid password');
-      }
+      const createdUser = await this.prisma.user.create({
+        data: {
+          email: authBody.email,
+          password: await hashUserPassword,
+        },
+      });
 
-      return await this.authenticateUser({ userId: existingUser.id });
+      return await this.authenticateUser({ userId: createdUser.id });
     } catch (error: unknown) {
       const message =
-        error instanceof Error ? error.message : 'Invalid credentials';
+        error instanceof Error
+          ? error.message
+          : 'Unable to register user. Please check your credentials and try again.';
       throw new UnauthorizedException(message);
     }
   }
