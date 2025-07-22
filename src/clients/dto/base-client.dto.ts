@@ -1,3 +1,4 @@
+import { Debtor } from './../../../generated/prisma/index.d';
 import { GetUsersDto } from '../../user/dtos/get-users.dto';
 import { Type } from 'class-transformer';
 import {
@@ -13,44 +14,63 @@ import {
 export class BaseClientDto {
   @IsNotEmpty()
   @IsString()
-  id: string;
+  readonly id: string;
 
   @IsNotEmpty()
   @IsString()
-  name: string;
+  readonly internalRef: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly name: string;
 
   @IsNotEmpty()
   @IsEmail()
-  email: string;
-
-  @IsOptional()
-  @IsEmail()
-  email2: string | null;
+  readonly email: string[];
 
   @IsOptional()
   @IsString()
   @IsPhoneNumber()
-  phone: string;
+  readonly phone: string[];
 
   @IsOptional()
   @IsString()
-  address: string;
+  readonly address: string;
 
   @IsOptional()
   @IsString()
-  siret: string;
+  readonly city: string;
+
+  @IsOptional()
+  @IsString()
+  readonly country: string;
+
+  @IsOptional()
+  @IsString()
+  readonly zipCode: string;
+
+  @IsOptional()
+  @IsString()
+  readonly siret: string;
 
   @IsOptional()
   @IsEnum(['PROFESSIONAL', 'PERSONAL'])
-  type: string[];
+  readonly type: string[];
+
+  @IsOptional()
+  readonly notes: string[];
 
   @IsDate()
   @Type(() => Date)
-  createdAt: Date;
+  readonly createdAt: Date;
 
   @IsDate()
   @Type(() => Date)
-  updatedAt: Date;
+  readonly updatedAt: Date;
 
-  user: GetUsersDto;
+  @IsOptional()
+  readonly user: GetUsersDto;
+
+  @IsOptional()
+  readonly debtor: Debtor[];
 }
