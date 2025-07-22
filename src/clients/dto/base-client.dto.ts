@@ -31,23 +31,23 @@ export class BaseClientDto {
   @IsOptional()
   @IsString()
   @IsPhoneNumber()
-  readonly phone: string[];
+  readonly phone?: string[];
 
   @IsOptional()
   @IsString()
-  readonly address: string;
+  readonly address?: string;
 
   @IsOptional()
   @IsString()
-  readonly city: string;
+  readonly city?: string;
 
   @IsOptional()
   @IsString()
-  readonly country: string;
+  readonly country?: string;
 
   @IsOptional()
   @IsString()
-  readonly zipCode: string;
+  readonly zipCode?: string;
 
   @IsOptional()
   @IsString()
@@ -58,7 +58,7 @@ export class BaseClientDto {
   readonly type: string[];
 
   @IsOptional()
-  readonly notes: string[];
+  readonly notes?: string[];
 
   @IsDate()
   @Type(() => Date)
@@ -72,5 +72,5 @@ export class BaseClientDto {
   readonly user: GetUsersDto;
 
   @IsOptional()
-  readonly debtor: Debtor[];
+  readonly debtor?: Debtor[];
 }
