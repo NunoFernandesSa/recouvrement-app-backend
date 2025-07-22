@@ -3,9 +3,30 @@ import { AuthLoginService } from './services/auth-login.service';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
+/**
+ * Service handling authentication operations
+ * @class AuthService
+ *
+ * @description
+ * This service provides authentication functionality by coordinating with the AuthLoginService.
+ * It acts as a facade for authentication-related operations like user login.
+ *
+ * @example
+ * ```typescript
+ * // Inject the service
+ * constructor(private authService: AuthService) {}
+ *
+ * // Use the login method
+ * const result = await authService.userLogin(loginDto);
+ * ```
+ */
 export class AuthService {
   constructor(private readonly authLoginService: AuthLoginService) {}
 
+  /**
+   * Authentication service that handles user authentication operations
+   * @class AuthService
+   */
   async userLogin(dto: LoginDto): Promise<any> {
     return await this.authLoginService.login(dto);
   }

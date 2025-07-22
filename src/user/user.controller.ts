@@ -27,17 +27,29 @@ export class UserController {
     return await this.userService.create(dto);
   }
 
-  @Get('')
+  @Get()
+  @ApiOperation({
+    summary: 'Get all users',
+    description: 'Retrieve a list of all users',
+  })
   async getUsers(): Promise<GetUsersDto[]> {
     return this.userService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'Get user by ID',
+    description: 'Retrieve a user by their unique ID',
+  })
   async getUserById(@Param('id') id: string): Promise<GetUsersDto | null> {
     return this.userService.findOne(id);
   }
 
   @Patch('update/:id')
+  @ApiOperation({
+    summary: 'Update user by ID',
+    description: 'Update a user by their unique ID',
+  })
   async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -46,6 +58,10 @@ export class UserController {
   }
 
   @Delete('delete/:id')
+  @ApiOperation({
+    summary: 'Delete user by ID',
+    description: 'Delete a user by their unique ID',
+  })
   async deleteUser(@Param('id') id: string): Promise<object> {
     return this.userService.delete(id);
   }

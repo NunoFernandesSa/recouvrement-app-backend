@@ -3,6 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { isPasswordValid } from 'src/utils/is-password-valid';
 import { LoginDto } from '../dtos/login.dto';
+import { UserPayload } from 'src/auth/jwt.strategy';
 
 @Injectable()
 export class AuthLoginService {
@@ -41,7 +42,7 @@ export class AuthLoginService {
         throw new UnauthorizedException('Invalid password');
       }
 
-      return await this.authenticateUser(existingUser.id);
+      return await this.authenticateUser({ userId: existingUser.id });
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : 'Invalid credentials';
@@ -59,8 +60,10 @@ export class AuthLoginService {
    * @returns A promise that resolves to an object containing the JWT access token
    * @throws {UnauthorizedException} If the authentication fails
    */
-  async authenticateUser(userId: string): Promise<{ access_token: string }> {
-    const payload = { userId };
+  async authenticateUser({
+    userId,
+  }: UserPayload): Promise<{ access_token: string }> {
+    const payload: UserPayload = { userId };
     const token = await this.jwtService.signAsync(payload);
     return { access_token: token };
   }

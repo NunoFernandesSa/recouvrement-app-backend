@@ -1,15 +1,40 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
+import { ApiOperation } from '@nestjs/swagger';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { RequestWithUser } from './jwt.strategy';
+import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   // ----- login -----
   @HttpCode(HttpStatus.OK)
   @Post('login')
+  @ApiOperation({ summary: 'User login', description: 'User login' })
   async login(@Body() loginDto: Record<string, any>): Promise<any> {
     return await this.authService.userLogin(loginDto as LoginDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async authenticateUser(@Req() req: RequestWithUser): Promise<any> {
+    if ('user' in req) {
+      return await this.userService.findOne(req.user.userId);
+    }
   }
 }
