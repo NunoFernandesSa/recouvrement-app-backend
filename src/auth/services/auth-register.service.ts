@@ -14,25 +14,21 @@ export class AuthRegisterService {
 
   async register(authBody: LoginDto): Promise<any> {
     // ----- Validate the user credentials -----
-
     try {
       // Find the user by email
       const existingUser = await this.prisma.user.findUnique({
         where: { email: authBody.email },
       });
 
-      // Check if the user exists
-      if (!existingUser) {
-        throw new UnauthorizedException('This user does not exist');
+      // Check if the user exists, If the user exists, throw an UnauthorizedException
+      if (existingUser) {
+        throw new UnauthorizedException('This user already exists.');
       }
 
-      // Check if the user is active
-      if (!existingUser.isActive) {
-        throw new UnauthorizedException('This user is not active');
-      }
-
+      // hash the password
       const hashUserPassword = hashPassword(authBody.password);
 
+      // Create the user
       const createdUser = await this.prisma.user.create({
         data: {
           email: authBody.email,

@@ -33,7 +33,7 @@ export class AuthController {
   @Post('register')
   @ApiOperation({ summary: 'User register', description: 'User register' })
   async register(@Body() loginDto: LoginDto): Promise<any> {
-    return await this.authService.userLogin(loginDto);
+    return await this.authService.userRegister(loginDto);
   }
 
   @UseGuards(JwtAuthGuard)
