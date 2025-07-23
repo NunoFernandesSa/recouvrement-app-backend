@@ -16,7 +16,6 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -30,6 +29,7 @@ export class UserController {
     return await this.userService.create(dto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   @ApiOperation({
     summary: 'Get all users',
@@ -39,6 +39,7 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiOperation({
     summary: 'Get user by ID',
@@ -48,6 +49,7 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('update/:id')
   @ApiOperation({
     summary: 'Update user by ID',
@@ -60,6 +62,7 @@ export class UserController {
     return this.userService.update(id, updateUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
   @ApiOperation({
     summary: 'Delete user by ID',
