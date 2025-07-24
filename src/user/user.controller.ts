@@ -63,7 +63,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('delete/:id')
+  @Delete(':id/delete')
   @ApiOperation({
     summary: 'Delete user by ID',
     description: 'Delete a user by their unique ID',
