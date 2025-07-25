@@ -54,7 +54,7 @@ export class UpdateClientDto extends PartialType(BaseClientDto) {
   @IsOptional()
   @IsEnum(['PROFESSIONAL', 'PERSONAL'], { each: true })
   @ApiPropertyOptional({ enum: ['PROFESSIONAL', 'PERSONAL'], isArray: true })
-  readonly type?: string[];
+  readonly type?: string;
 
   @IsOptional()
   @ApiPropertyOptional({ type: [String] })

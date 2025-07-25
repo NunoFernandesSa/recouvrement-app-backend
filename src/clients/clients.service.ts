@@ -5,6 +5,7 @@ import { FindManyClientsService } from './services/client-find-many.service';
 import { CreateClientService } from './services/client-create.service';
 import { Injectable } from '@nestjs/common';
 import { UpdateClientDto } from './dto/update-client.dto';
+import { CreateClientDto } from './dto/create-client.dto';
 
 @Injectable()
 export class ClientsService {
@@ -16,8 +17,8 @@ export class ClientsService {
     private readonly deleteClientService: DeleteClientService,
   ) {}
 
-  async create(): Promise<any> {
-    return this.createClientService.createClient();
+  async create(dto: CreateClientDto): Promise<any> {
+    return this.createClientService.createClient(dto);
   }
 
   async findAll(): Promise<any> {

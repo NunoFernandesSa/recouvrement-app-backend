@@ -9,9 +9,8 @@ import {
   IsString,
   IsEnum,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-import { GetUsersDto } from 'src/user/dtos/get-users.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ClientType } from 'generated/prisma';
 
 export class CreateClientDto extends PickType(BaseClientDto, [
   'internalRef',
@@ -25,13 +24,12 @@ export class CreateClientDto extends PickType(BaseClientDto, [
   'siret',
   'type',
   'notes',
-  'user',
   'debtor',
 ] as const) {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  readonly internalRef: string;
+  internalRef: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -76,16 +74,15 @@ export class CreateClientDto extends PickType(BaseClientDto, [
   @ApiPropertyOptional({ enum: ['PROFESSIONAL', 'PERSONAL'], isArray: true })
   @IsOptional()
   @IsEnum(['PROFESSIONAL', 'PERSONAL'], { each: true })
-  readonly type: string[];
+  readonly type: ClientType;
 
   @ApiPropertyOptional({ type: [String] })
   @IsOptional()
   readonly notes?: string[];
 
-  @ApiProperty({ type: () => GetUsersDto })
+  @ApiProperty()
   @IsNotEmpty()
-  @Type(() => GetUsersDto)
-  readonly user: any;
+  readonly userId: string;
 
   @ApiPropertyOptional({ type: 'array', items: { type: 'object' } })
   @IsOptional()

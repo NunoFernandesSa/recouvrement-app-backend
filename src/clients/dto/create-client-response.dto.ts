@@ -4,6 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateClientResponseDto extends PickType(BaseClientDto, [
   'id',
+  'internalRef',
   'name',
   'email',
   'phone',
@@ -20,6 +21,9 @@ export class CreateClientResponseDto extends PickType(BaseClientDto, [
   id: string;
 
   @ApiProperty()
+  internalRef: string;
+
+  @ApiProperty()
   name: string;
 
   @ApiProperty({ type: [String] })
@@ -29,23 +33,23 @@ export class CreateClientResponseDto extends PickType(BaseClientDto, [
   phone?: string[];
 
   @ApiProperty({ required: false })
-  address?: string;
+  address?: string | null;
 
   @ApiProperty({ required: false })
-  city?: string;
+  city?: string | null;
 
   @ApiProperty({ required: false })
-  country?: string;
+  country?: string | null;
 
   @ApiProperty({ required: false })
-  zipCode?: string;
+  zipCode?: string | null;
 
   @ApiProperty({
     required: false,
     enum: ['PROFESSIONAL', 'PERSONAL'],
-    isArray: true,
+    isArray: false,
   })
-  type: string[];
+  type: ClientTypes;
 
   @ApiProperty({ required: false, type: [String] })
   notes?: string[];

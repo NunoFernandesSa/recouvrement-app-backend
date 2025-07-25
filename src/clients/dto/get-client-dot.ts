@@ -51,7 +51,7 @@ export class GetClientDto extends PickType(BaseClientDto, [
   siret: string;
 
   @ApiPropertyOptional({ enum: ['PROFESSIONAL', 'PERSONAL'], isArray: true })
-  type: string[];
+  type: string;
 
   @ApiPropertyOptional({ type: [String] })
   notes?: string[];

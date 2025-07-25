@@ -35,19 +35,19 @@ export class BaseClientDto {
 
   @IsOptional()
   @IsString()
-  readonly address?: string;
+  readonly address?: string | null;
 
   @IsOptional()
   @IsString()
-  readonly city?: string;
+  readonly city?: string | null;
 
   @IsOptional()
   @IsString()
-  readonly country?: string;
+  readonly country?: string | null;
 
   @IsOptional()
   @IsString()
-  readonly zipCode?: string;
+  readonly zipCode?: string | null;
 
   @IsOptional()
   @IsString()
@@ -55,7 +55,7 @@ export class BaseClientDto {
 
   @IsOptional()
   @IsEnum(['PROFESSIONAL', 'PERSONAL'])
-  readonly type: string[];
+  readonly type: string;
 
   @IsOptional()
   readonly notes?: string[];
