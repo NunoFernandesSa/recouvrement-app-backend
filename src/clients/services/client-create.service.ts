@@ -37,9 +37,12 @@ export class CreateClientService {
       throw new Error('At least one email address is required');
     }
 
+    // ----- Generate a unique internal reference -----
+    const internalRef = uuidv4();
+
     // Check if the client already exists
     const existingClient = await this.prisma.client.findFirst({
-      where: { internalRef: data.internalRef.trim() },
+      where: { internalRef },
     });
 
     if (existingClient) {
@@ -47,8 +50,6 @@ export class CreateClientService {
     }
 
     try {
-      const internalRef = uuidv4();
-
       // Create the client
       const createdClient = await this.prisma.client.create({
         data: { ...data, userId: data.userId, internalRef: internalRef },

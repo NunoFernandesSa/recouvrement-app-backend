@@ -13,7 +13,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ClientType } from 'generated/prisma';
 
 export class CreateClientDto extends PickType(BaseClientDto, [
-  'internalRef',
   'name',
   'email',
   'phone',
@@ -26,11 +25,6 @@ export class CreateClientDto extends PickType(BaseClientDto, [
   'notes',
   'debtor',
 ] as const) {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  internalRef: string;
-
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
