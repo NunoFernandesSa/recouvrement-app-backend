@@ -25,11 +25,16 @@ export class CreateClientService {
    * @returns {Promise<CreateClientResponseDto>} The created client data with assigned ID
    */
   async createClient(data: CreateClientDto): Promise<CreateClientResponseDto> {
+    // -----||-------||-----
+    // ----- Variables -----
+    // -----||-------||-----
+    let internalRef: string;
+
     // -----||-------------||-----
     // ----- Validate inputs -----
     // -----||-------------||-----
 
-    if (!data.name?.trim()) {
+    if (!data.name.trim()) {
       throw new Error('Name is required');
     }
 
@@ -38,7 +43,11 @@ export class CreateClientService {
     }
 
     // ----- Generate a unique internal reference -----
-    const internalRef = uuidv4();
+    if (data.name) {
+      internalRef = `CLT-FR-${data.name}`;
+    } else {
+      internalRef = `CLT-FR-${uuidv4()}`;
+    }
 
     // Check if the client already exists
     const existingClient = await this.prisma.client.findFirst({
