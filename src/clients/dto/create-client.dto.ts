@@ -1,29 +1,24 @@
 // create-client.dto.ts
-import { PickType } from '@nestjs/mapped-types';
-import { BaseClientDto } from './base-client.dto';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
   IsString,
-  IsEnum,
 } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { OmitType } from '@nestjs/mapped-types';
+import { BaseClientDto } from './base-client.dto';
 import { ClientType } from 'generated/prisma';
 
-export class CreateClientDto extends PickType(BaseClientDto, [
-  'name',
-  'email',
-  'phone',
-  'address',
-  'city',
-  'country',
-  'zipCode',
-  'siret',
-  'type',
-  'notes',
-  'debtor',
+// Omettre le champ "user" hérité de BaseClientDto
+export class CreateClientDto extends OmitType(BaseClientDto, [
+  'id',
+  'internalRef',
+  'createdAt',
+  'updatedAt',
+  'user',
 ] as const) {
   @ApiProperty()
   @IsNotEmpty()
@@ -38,7 +33,7 @@ export class CreateClientDto extends PickType(BaseClientDto, [
   @ApiPropertyOptional({ type: [String] })
   @IsOptional()
   @IsPhoneNumber(undefined, { each: true })
-  readonly phone: string[];
+  readonly phone?: string[];
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -63,9 +58,9 @@ export class CreateClientDto extends PickType(BaseClientDto, [
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  readonly siret?: string;
+  readonly siret: string;
 
-  @ApiPropertyOptional({ enum: ['PROFESSIONAL', 'PERSONAL'], isArray: true })
+  @ApiPropertyOptional({ enum: ['PROFESSIONAL', 'PERSONAL'] })
   @IsOptional()
   @IsEnum(['PROFESSIONAL', 'PERSONAL'])
   readonly type: ClientType;

@@ -56,7 +56,7 @@ export class CreateClientService {
 
     // ----- Generate a unique internal reference -----
     if (data.name) {
-      internalRef = `CLT-FR-${data.name}`;
+      internalRef = `CLT-FR-${data.name.trim().replace(/\s+/g, '-')}`;
     } else {
       internalRef = `CLT-FR-${uuidv4()}`;
     }
@@ -71,9 +71,21 @@ export class CreateClientService {
     }
 
     try {
+      console.log('User ID from request:', req.user?.id);
+
+      // clean data before create client
+      const clientData = { ...data };
+      delete clientData.debtor; // Remove the "debtor" property from the data object
+
+      const dataCleaned = {
+        ...clientData,
+        internalRef,
+        userId: req.user.id,
+      };
+
       // Create the client
       const createdClient = await this.prisma.client.create({
-        data: { ...data, userId: req.user.id, internalRef },
+        data: dataCleaned,
       });
 
       // Return the created client with the correct type
