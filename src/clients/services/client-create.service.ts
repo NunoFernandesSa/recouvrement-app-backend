@@ -6,6 +6,7 @@ import { plainToInstance } from 'class-transformer';
 
 import { v4 as uuidv4 } from 'uuid';
 import { RequestWithUserId } from 'src/common/request-with-user-id';
+import { ClientsServiceError } from 'src/common/errors/clients-service-error';
 
 @Injectable()
 export class CreateClientService {
@@ -28,7 +29,7 @@ export class CreateClientService {
   async createClient(
     data: CreateClientDto,
     req: RequestWithUserId,
-  ): Promise<any> {
+  ): Promise<CreateClientResponseDto> {
     // -----||-------||-----
     // ----- Variables -----
     // -----||-------||-----
@@ -39,11 +40,11 @@ export class CreateClientService {
     // -----||-------------||-----
 
     if (!data.name.trim()) {
-      throw new Error('Name is required');
+      throw new ClientsServiceError('Name is required');
     }
 
     if (!Array.isArray(data.email) || data.email.length === 0) {
-      throw new Error('At least one email address is required');
+      throw new ClientsServiceError('At least one email address is required');
     }
 
     // Check if the user exists before creating the client
@@ -51,7 +52,7 @@ export class CreateClientService {
       where: { id: req.user.id },
     });
     if (!userIdExists) {
-      throw new Error('User not found');
+      throw new ClientsServiceError('User not found');
     }
 
     // ----- Generate a unique internal reference -----
@@ -67,18 +68,14 @@ export class CreateClientService {
     });
 
     if (existingClient) {
-      throw new Error('Client already exists');
+      throw new ClientsServiceError('Client already exists');
     }
 
     try {
-      console.log('User ID from request:', req.user?.id);
-
-      // clean data before create client
-      const clientData = { ...data };
-      delete clientData.debtor; // Remove the "debtor" property from the data object
-
+      // prepare data to create the client in the database
+      // add userId from the request to the data object
       const dataCleaned = {
-        ...clientData,
+        ...data,
         internalRef,
         userId: req.user.id,
       };

@@ -13,6 +13,7 @@ import { UpdateClientDto } from './dto/update-client.dto';
 import { CreateClientDto } from './dto/create-client.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RequestWithUserId } from 'src/common/request-with-user-id';
+import { CreateClientResponseDto } from './dto/create-client-response.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('clients')
@@ -23,7 +24,7 @@ export class ClientsController {
   async create(
     @Body() data: CreateClientDto,
     @Req() req: RequestWithUserId,
-  ): Promise<any> {
+  ): Promise<CreateClientResponseDto> {
     return this.clientsService.create(data, req);
   }
 

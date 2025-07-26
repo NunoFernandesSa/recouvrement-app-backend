@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import UserServiceError from 'src/errors/user-service.error';
+import UserServiceError from 'src/common/errors/user-service.error';
 import { PrismaService } from 'src/prisma.service';
 import { GetUsersDto } from '../dtos/get-users.dto';
 import { plainToInstance } from 'class-transformer';

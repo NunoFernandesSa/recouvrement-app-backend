@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { CreateClientDto } from './dto/create-client.dto';
 import { RequestWithUserId } from 'src/common/request-with-user-id';
+import { CreateClientResponseDto } from './dto/create-client-response.dto';
 
 @Injectable()
 export class ClientsService {
@@ -18,7 +19,10 @@ export class ClientsService {
     private readonly deleteClientService: DeleteClientService,
   ) {}
 
-  async create(data: CreateClientDto, req: RequestWithUserId): Promise<any> {
+  async create(
+    data: CreateClientDto,
+    req: RequestWithUserId,
+  ): Promise<CreateClientResponseDto> {
     return this.createClientService.createClient(data, req);
   }
 
