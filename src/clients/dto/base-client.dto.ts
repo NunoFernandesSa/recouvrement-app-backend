@@ -9,6 +9,7 @@ import {
   IsEnum,
   IsDate,
 } from 'class-validator';
+import { GetUsersDto } from 'src/user/dtos/get-users.dto';
 
 export class BaseClientDto {
   @IsNotEmpty()
@@ -65,6 +66,9 @@ export class BaseClientDto {
   @IsDate()
   @Type(() => Date)
   readonly updatedAt: Date;
+
+  @IsOptional()
+  readonly user: GetUsersDto;
 
   @IsOptional()
   readonly debtor?: Debtor[];
