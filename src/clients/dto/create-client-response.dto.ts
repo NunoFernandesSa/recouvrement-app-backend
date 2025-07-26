@@ -1,6 +1,7 @@
 import { PickType } from '@nestjs/mapped-types';
 import { BaseClientDto } from './base-client.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ClientType } from 'generated/prisma';
 
 export class CreateClientResponseDto extends PickType(BaseClientDto, [
   'id',
@@ -17,46 +18,42 @@ export class CreateClientResponseDto extends PickType(BaseClientDto, [
   'createdAt',
   'updatedAt',
 ] as const) {
-  @ApiProperty()
+  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'CLT-2025-001' })
   internalRef: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'Acme Corp' })
   name: string;
 
-  @ApiProperty({ type: [String] })
+  @ApiProperty({ example: ['contact@acme.com'] })
   email: string[];
 
-  @ApiProperty({ type: [String], required: false })
+  @ApiPropertyOptional({ example: ['+33600000000'], type: [String] })
   phone?: string[];
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ example: '123 Main St' })
   address?: string | null;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ example: 'Anytown' })
   city?: string | null;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ example: 'USA' })
   country?: string | null;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ example: '12345' })
   zipCode?: string | null;
 
-  @ApiProperty({
-    required: false,
-    enum: ['PROFESSIONAL', 'PERSONAL'],
-    isArray: false,
-  })
+  @ApiProperty({ enum: ClientType, example: ClientType.PROFESSIONAL })
   type: ClientTypes;
 
-  @ApiProperty({ required: false, type: [String] })
+  @ApiPropertyOptional({ example: ['Note 1', 'Note 2'] })
   notes?: string[];
 
-  @ApiProperty()
+  @ApiProperty({ example: '2023-07-25T12:00:00.000Z' })
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ example: '2023-07-25T12:00:00.000Z' })
   updatedAt: Date;
 }
