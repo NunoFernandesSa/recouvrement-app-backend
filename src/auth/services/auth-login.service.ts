@@ -61,11 +61,10 @@ export class AuthLoginService {
   // -----|||-------------------------|||----
   // -----|||---- Private methods ----|||----
   // -----|||-------------------------|||----
-
   /**
    * Authenticates a user and generates a JWT access token
    * @param {UserPayload} payload - Object containing the user ID to authenticate
-   * @param {string} payload.userId - The unique identifier of the user
+   * @param {string} payload.id - The unique identifier of the user
    * @returns {Promise<{access_token: string}>} A promise that resolves to an object containing the JWT access token
    * @throws {UnauthorizedException} If the authentication process fails
    */
