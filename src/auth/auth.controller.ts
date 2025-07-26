@@ -13,7 +13,7 @@ import { LoginDto } from './dtos/login.dto';
 import { ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { UserService } from 'src/user/user.service';
-import { RequestWithUserId } from 'src/common/request-with-user-id';
+import { RequestWithUserId } from 'src/common/requestWithUserId.interface';
 
 @Controller('auth')
 export class AuthController {

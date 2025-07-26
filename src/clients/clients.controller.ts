@@ -12,7 +12,7 @@ import { ClientsService } from './clients.service';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { CreateClientDto } from './dto/create-client.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RequestWithUserId } from 'src/common/request-with-user-id';
+import { RequestWithUserId } from 'src/common/requestWithUserId.interface';
 import { CreateClientResponseDto } from './dto/create-client-response.dto';
 
 @UseGuards(JwtAuthGuard)
