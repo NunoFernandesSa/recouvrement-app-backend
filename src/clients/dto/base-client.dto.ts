@@ -1,5 +1,4 @@
 import { Debtor } from './../../../generated/prisma/index.d';
-import { GetUsersDto } from '../../user/dtos/get-users.dto';
 import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
@@ -25,12 +24,11 @@ export class BaseClientDto {
   readonly name: string;
 
   @IsNotEmpty()
-  @IsEmail()
+  @IsEmail({}, { each: true })
   readonly email: string[];
 
   @IsOptional()
-  @IsString()
-  @IsPhoneNumber()
+  @IsPhoneNumber(undefined, { each: true })
   readonly phone?: string[];
 
   @IsOptional()
@@ -51,7 +49,7 @@ export class BaseClientDto {
 
   @IsOptional()
   @IsString()
-  readonly siret: string;
+  readonly siret?: string;
 
   @IsOptional()
   @IsEnum(['PROFESSIONAL', 'PERSONAL'])
@@ -67,9 +65,6 @@ export class BaseClientDto {
   @IsDate()
   @Type(() => Date)
   readonly updatedAt: Date;
-
-  @IsOptional()
-  readonly user: GetUsersDto;
 
   @IsOptional()
   readonly debtor?: Debtor[];

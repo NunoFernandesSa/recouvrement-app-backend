@@ -5,6 +5,7 @@ import { CreateClientResponseDto } from '../dto/create-client-response.dto';
 import { plainToInstance } from 'class-transformer';
 
 import { v4 as uuidv4 } from 'uuid';
+import { RequestWithUserId } from 'src/common/request-with-user-id';
 
 @Injectable()
 export class CreateClientService {
@@ -24,7 +25,10 @@ export class CreateClientService {
    * @throws {InternalServerErrorException} When database operation fails
    * @returns {Promise<CreateClientResponseDto>} The created client data with assigned ID
    */
-  async createClient(data: CreateClientDto, userId: string): Promise<any> {
+  async createClient(
+    data: CreateClientDto,
+    req: RequestWithUserId,
+  ): Promise<any> {
     // -----||-------||-----
     // ----- Variables -----
     // -----||-------||-----
@@ -43,8 +47,8 @@ export class CreateClientService {
     }
 
     // Check if the user exists before creating the client
-    const userIdExists = await this.prisma.user.findUnique({
-      where: { id: userId },
+    const userIdExists = await this.prisma.user.findFirst({
+      where: { id: req.user.id },
     });
     if (!userIdExists) {
       throw new Error('User not found');
@@ -69,7 +73,7 @@ export class CreateClientService {
     try {
       // Create the client
       const createdClient = await this.prisma.client.create({
-        data: { ...data, userId, internalRef },
+        data: { ...data, userId: req.user.id, internalRef },
       });
 
       // Return the created client with the correct type

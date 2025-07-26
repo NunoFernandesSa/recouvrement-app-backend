@@ -24,7 +24,7 @@ export class ClientsController {
     @Body() data: CreateClientDto,
     @Req() req: RequestWithUserId,
   ): Promise<any> {
-    return this.clientsService.create(data, req.user.id);
+    return this.clientsService.create(data, req);
   }
 
   @Get()

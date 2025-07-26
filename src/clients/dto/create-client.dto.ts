@@ -63,11 +63,11 @@ export class CreateClientDto extends PickType(BaseClientDto, [
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  readonly siret: string;
+  readonly siret?: string;
 
   @ApiPropertyOptional({ enum: ['PROFESSIONAL', 'PERSONAL'], isArray: true })
   @IsOptional()
-  @IsEnum(['PROFESSIONAL', 'PERSONAL'], { each: true })
+  @IsEnum(['PROFESSIONAL', 'PERSONAL'])
   readonly type: ClientType;
 
   @ApiPropertyOptional({ type: [String] })
