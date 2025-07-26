@@ -51,9 +51,17 @@ export class CreateClientResponseDto extends PickType(BaseClientDto, [
   @ApiPropertyOptional({ example: ['Note 1', 'Note 2'] })
   notes?: string[];
 
-  @ApiProperty({ example: '2023-07-25T12:00:00.000Z' })
+  @ApiProperty({
+    example: new Date().toISOString(),
+    type: String,
+    format: 'date-time',
+  })
   createdAt: Date;
 
-  @ApiProperty({ example: '2023-07-25T12:00:00.000Z' })
+  @ApiProperty({
+    example: new Date().toISOString(),
+    type: String,
+    format: 'date-time',
+  })
   updatedAt: Date;
 }
