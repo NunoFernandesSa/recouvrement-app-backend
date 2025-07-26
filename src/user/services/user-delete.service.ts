@@ -3,7 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import UserServiceError from 'src/common/errors/user-service.error';
+import UserServiceError from 'src/errors/user-service.error';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()

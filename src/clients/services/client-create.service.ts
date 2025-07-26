@@ -6,7 +6,7 @@ import { plainToInstance } from 'class-transformer';
 
 import { v4 as uuidv4 } from 'uuid';
 import { RequestWithUserId } from 'src/common/requestWithUserId.interface';
-import { ClientsServiceError } from 'src/common/errors/clients-service-error';
+import { ClientsServiceError } from 'src/errors/clients-service-error';
 
 @Injectable()
 export class CreateClientService {
