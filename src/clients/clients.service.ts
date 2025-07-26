@@ -17,8 +17,8 @@ export class ClientsService {
     private readonly deleteClientService: DeleteClientService,
   ) {}
 
-  async create(dto: CreateClientDto): Promise<any> {
-    return this.createClientService.createClient(dto);
+  async create(data: CreateClientDto, userId: string): Promise<any> {
+    return this.createClientService.createClient(data, userId);
   }
 
   async findAll(): Promise<any> {

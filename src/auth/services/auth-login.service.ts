@@ -48,7 +48,9 @@ export class AuthLoginService {
         throw new UnauthorizedException('Invalid password');
       }
 
-      return await this.authenticateUser({ userId: existingUser.id });
+      return await this.authenticateUser({
+        id: existingUser.id,
+      });
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : 'Invalid credentials';
@@ -68,9 +70,9 @@ export class AuthLoginService {
    * @throws {UnauthorizedException} If the authentication process fails
    */
   async authenticateUser({
-    userId,
+    id: userId,
   }: UserPayload): Promise<{ access_token: string }> {
-    const payload: UserPayload = { userId };
+    const payload: UserPayload = { id: userId };
     const token = await this.jwtService.signAsync(payload);
     return { access_token: token };
   }

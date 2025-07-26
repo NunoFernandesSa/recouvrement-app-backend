@@ -12,8 +12,8 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { RequestWithUser } from './jwt.strategy';
 import { UserService } from 'src/user/user.service';
+import { RequestWithUserId } from 'src/common/request-with-user-id';
 
 @Controller('auth')
 export class AuthController {
@@ -38,9 +38,9 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async authenticateUser(@Req() req: RequestWithUser): Promise<any> {
+  async authenticateUser(@Req() req: RequestWithUserId): Promise<any> {
     if ('user' in req) {
-      return await this.userService.findOne(req.user.userId);
+      return await this.userService.findOne(req.user.id);
     }
   }
 }

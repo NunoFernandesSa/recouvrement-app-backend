@@ -36,7 +36,7 @@ export class AuthRegisterService {
         },
       });
 
-      return await this.authenticateUser({ userId: createdUser.id });
+      return await this.authenticateUser({ id: createdUser.id });
     } catch (error: unknown) {
       const message =
         error instanceof Error
@@ -58,9 +58,9 @@ export class AuthRegisterService {
    * @throws {UnauthorizedException} If the authentication process fails
    */
   async authenticateUser({
-    userId,
+    id: userId,
   }: UserPayload): Promise<{ access_token: string }> {
-    const payload: UserPayload = { userId };
+    const payload: UserPayload = { id: userId };
     const token = await this.jwtService.signAsync(payload);
     return { access_token: token };
   }

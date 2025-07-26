@@ -1,15 +1,30 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { CreateClientDto } from './dto/create-client.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RequestWithUserId } from 'src/common/request-with-user-id';
 
+@UseGuards(JwtAuthGuard)
 @Controller('clients')
 export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
 
   @Post('new')
-  async create(@Body() dto: CreateClientDto): Promise<any> {
-    return this.clientsService.create(dto);
+  async create(
+    @Body() data: CreateClientDto,
+    @Req() req: RequestWithUserId,
+  ): Promise<any> {
+    return this.clientsService.create(data, req.user.id);
   }
 
   @Get()

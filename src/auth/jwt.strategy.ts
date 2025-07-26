@@ -4,15 +4,16 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 export type UserPayload = {
-  userId: string;
+  id: string;
 };
+
 export type RequestWithUser = {
   user: UserPayload;
 };
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly configService: ConfigService) {
+  constructor(configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -20,9 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate({ userId }: UserPayload): Promise<{
-    userId: string;
-  }> {
-    return { userId };
+  async validate(payload: UserPayload): Promise<UserPayload> {
+    return { id: payload.id };
   }
 }

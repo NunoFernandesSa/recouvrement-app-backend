@@ -74,10 +74,6 @@ export class CreateClientDto extends PickType(BaseClientDto, [
   @IsOptional()
   readonly notes?: string[];
 
-  @ApiProperty()
-  @IsNotEmpty()
-  readonly userId: string;
-
   @ApiPropertyOptional({ type: 'array', items: { type: 'object' } })
   @IsOptional()
   readonly debtor?: any;

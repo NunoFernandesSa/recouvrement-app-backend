@@ -24,7 +24,7 @@ export class CreateClientService {
    * @throws {InternalServerErrorException} When database operation fails
    * @returns {Promise<CreateClientResponseDto>} The created client data with assigned ID
    */
-  async createClient(data: CreateClientDto): Promise<CreateClientResponseDto> {
+  async createClient(data: CreateClientDto, userId: string): Promise<any> {
     // -----||-------||-----
     // ----- Variables -----
     // -----||-------||-----
@@ -40,6 +40,14 @@ export class CreateClientService {
 
     if (!Array.isArray(data.email) || data.email.length === 0) {
       throw new Error('At least one email address is required');
+    }
+
+    // Check if the user exists before creating the client
+    const userIdExists = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!userIdExists) {
+      throw new Error('User not found');
     }
 
     // ----- Generate a unique internal reference -----
@@ -61,12 +69,14 @@ export class CreateClientService {
     try {
       // Create the client
       const createdClient = await this.prisma.client.create({
-        data: { ...data, userId: data.userId, internalRef: internalRef },
+        data: { ...data, userId, internalRef },
       });
 
       // Return the created client with the correct type
       return plainToInstance(CreateClientResponseDto, createdClient);
     } catch (error: any) {
+      console.log('Erreur lors de la création client:', error);
+
       throw new InternalServerErrorException(
         'Failed to create client',
         error instanceof Error ? error.message : 'Unknown error',
