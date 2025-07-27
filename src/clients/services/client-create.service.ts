@@ -3,10 +3,10 @@ import { PrismaService } from 'src/prisma.service';
 import { CreateClientDto } from '../dto/create-client.dto';
 import { CreateClientResponseDto } from '../dto/create-client-response.dto';
 import { plainToInstance } from 'class-transformer';
+import { ClientsServiceError } from 'src/errors/clients-service-error';
 
 import { v4 as uuidv4 } from 'uuid';
 import { RequestWithUserId } from 'src/common/requestWithUserId.interface';
-import { ClientsServiceError } from 'src/errors/clients-service-error';
 
 @Injectable()
 export class CreateClientService {
