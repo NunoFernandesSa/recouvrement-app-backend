@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -67,7 +68,7 @@ export class ClientsController {
     summary: 'Delete a client by ID',
     description: 'Delete a client by ID for the current user',
   })
-  @Post(':id/delete')
+  @Delete(':id/delete')
   async delete(@Param('id') id: string): Promise<any> {
     return this.clientsService.remove(id);
   }
