@@ -37,7 +37,7 @@ export class ClientsService {
   async update(id: string, dto: UpdateClientDto): Promise<any> {
     return this.updateClientService.updateClient(id, dto);
   }
-  async remove(id: string): Promise<any> {
+  async remove(id: string): Promise<object> {
     return this.deleteClientService.deleteClient(id);
   }
 }

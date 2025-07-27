@@ -69,7 +69,7 @@ export class ClientsController {
     description: 'Delete a client by ID for the current user',
   })
   @Delete(':id/delete')
-  async delete(@Param('id') id: string): Promise<any> {
+  async delete(@Param('id') id: string): Promise<object> {
     return this.clientsService.remove(id);
   }
 }

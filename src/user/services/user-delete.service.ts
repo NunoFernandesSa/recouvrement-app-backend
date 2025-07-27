@@ -43,7 +43,7 @@ export class UserDeleteService {
       return { message: 'User deleted' };
     } catch (_: unknown) {
       throw new InternalServerErrorException(
-        'An unknown error occurred while deleting the user',
+        'An unknown error occurred while try deleting the user',
       );
     }
   }
