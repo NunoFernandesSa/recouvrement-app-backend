@@ -39,8 +39,8 @@ export class FindManyClientsService {
         },
       });
 
-      if (!existingClients) {
-        throw new ClientsServiceError('Clients not found');
+      if (existingClients.length === 0) {
+        throw new ClientsServiceError('No clients found in the database');
       }
 
       return plainToInstance(GetClientDto, existingClients);
