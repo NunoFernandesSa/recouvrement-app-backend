@@ -8,6 +8,24 @@ import { plainToInstance } from 'class-transformer';
 export class FindManyClientsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Service for retrieving clients from the database
+   * @class FindManyClientsService
+   */
+
+  /**
+   * Retrieves all clients from the database with their associated user and debtor IDs
+   *
+   * @description Fetches a list of all clients with their complete information including
+   * internal references, contact details, and associated relationships
+   *
+   * @returns {Promise<GetClientDto[]>} A promise that resolves to an array of GetClientDto objects
+   * containing the client information
+   *
+   * @throws {ClientsServiceError} When no clients are found in the database or if there's an error
+   * during the retrieval process
+   * @throws {HttpException} When an HTTP-related error occurs during the database query
+   */
   async findAllClients(): Promise<GetClientDto[]> {
     try {
       const existingClients = await this.prisma.client.findMany({

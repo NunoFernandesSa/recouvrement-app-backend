@@ -8,6 +8,18 @@ import { CreateClientResponseDto } from '../dto/create-client-response.dto';
 export class FindOneClientService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Service for retrieving a client from the system
+   * @class FindOneClientService
+   */
+
+  /**
+   * Finds a single client by their ID
+   * @param id - The unique identifier of the client to find
+   * @returns The client data transformed to CreateClientResponseDto
+   * @throws HttpException if client is not found
+   * @throws ClientsServiceError if there is an error during retrieval
+   */
   async findOneClient(id: string) {
     try {
       // Find the client by ID in the database
