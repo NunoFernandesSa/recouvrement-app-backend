@@ -1,8 +1,8 @@
-import { HttpException, Injectable } from '@nestjs/common';
-import { ClientsServiceError } from 'src/errors/clients-service-error';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { GetClientDto } from '../dto/get-client-dot';
 import { plainToInstance } from 'class-transformer';
+import MyServicesError from 'src/errors/my-services.error';
 
 @Injectable()
 export class FindManyClientsService {
@@ -58,7 +58,10 @@ export class FindManyClientsService {
       });
 
       if (existingClients.length === 0) {
-        throw new ClientsServiceError('No clients found in the database');
+        throw new MyServicesError(
+          'No clients found in the database',
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       return plainToInstance(GetClientDto, existingClients);
@@ -67,7 +70,7 @@ export class FindManyClientsService {
         throw error;
       }
 
-      throw new ClientsServiceError(
+      throw new MyServicesError(
         `Failed to retrieve clients. Error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }

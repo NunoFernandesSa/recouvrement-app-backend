@@ -1,12 +1,16 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateClientDto } from '../dto/create-client.dto';
 import { CreateClientResponseDto } from '../dto/create-client-response.dto';
 import { plainToInstance } from 'class-transformer';
-import { ClientsServiceError } from 'src/errors/clients-service-error';
 
 import { v4 as uuidv4 } from 'uuid';
 import { RequestWithUserId } from 'src/common/requestWithUserId.interface';
+import MyServicesError from 'src/errors/my-services.error';
 
 @Injectable()
 export class CreateClientService {
@@ -45,11 +49,11 @@ export class CreateClientService {
     // -----||-------------||-----
 
     if (!data.name.trim()) {
-      throw new ClientsServiceError('Name is required');
+      throw new MyServicesError('Name is required');
     }
 
     if (!Array.isArray(data.email) || data.email.length === 0) {
-      throw new ClientsServiceError('At least one email address is required');
+      throw new MyServicesError('At least one email address is required');
     }
 
     // Check if the user exists before creating the client
@@ -57,7 +61,7 @@ export class CreateClientService {
       where: { id: req.user.id },
     });
     if (!userIdExists) {
-      throw new ClientsServiceError('User not found');
+      throw new MyServicesError('User not found', HttpStatus.NOT_FOUND);
     }
 
     // ----- Generate a unique internal reference -----
@@ -73,7 +77,7 @@ export class CreateClientService {
     });
 
     if (existingClient) {
-      throw new ClientsServiceError('Client already exists');
+      throw new MyServicesError('Client already exists', HttpStatus.CONFLICT);
     }
 
     try {

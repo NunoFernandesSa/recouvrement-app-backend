@@ -3,7 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { ClientsServiceError } from 'src/errors/clients-service-error';
+import MyServicesError from 'src/errors/my-services.error';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -30,7 +30,7 @@ export class DeleteClientService {
       });
 
       if (!existingClient) {
-        throw new ClientsServiceError(
+        throw new MyServicesError(
           `Client with ID: |${id}| not found`,
           HttpStatus.NOT_FOUND,
         );
@@ -43,7 +43,7 @@ export class DeleteClientService {
         });
         return { message: 'Client deleted successfully', success: true };
       } catch (_: unknown) {
-        throw new ClientsServiceError(
+        throw new MyServicesError(
           'Error deleting client',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );

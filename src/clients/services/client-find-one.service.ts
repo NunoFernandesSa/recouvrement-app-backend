@@ -1,8 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { ClientsServiceError } from 'src/errors/clients-service-error';
 import { PrismaService } from 'src/prisma.service';
 import { CreateClientResponseDto } from '../dto/create-client-response.dto';
+import MyServicesError from 'src/errors/my-services.error';
 
 @Injectable()
 export class FindOneClientService {
@@ -61,7 +61,7 @@ export class FindOneClientService {
         throw error;
       }
 
-      throw new ClientsServiceError(
+      throw new MyServicesError(
         `Failed to retrieve clients. Error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }

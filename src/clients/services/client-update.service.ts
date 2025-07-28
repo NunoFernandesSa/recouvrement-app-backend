@@ -5,9 +5,9 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { ClientsServiceError } from 'src/errors/clients-service-error';
 import { ClientType } from 'generated/prisma';
 import { plainToInstance } from 'class-transformer';
+import MyServicesError from 'src/errors/my-services.error';
 
 @Injectable()
 export class UpdateClientService {
@@ -42,7 +42,7 @@ export class UpdateClientService {
       });
 
       if (!existingClient) {
-        throw new ClientsServiceError(
+        throw new MyServicesError(
           `Client not found with ID: ${id}`,
           HttpStatus.NOT_FOUND,
         );

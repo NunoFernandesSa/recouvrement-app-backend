@@ -12,4 +12,12 @@ export class DebtorService {
     private readonly findOneDebtorService: FindOneDebtorService,
     private readonly deleteDebtorService: DeleteDebtorService,
   ) {}
+
+  async create(data: any): Promise<any> {
+    return this.createDebtorService.createDebtor(data);
+  }
+
+  async delete(id: string): Promise<any> {
+    return this.deleteDebtorService.deleteDebtor(id);
+  }
 }
