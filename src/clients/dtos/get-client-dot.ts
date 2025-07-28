@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { GetUsersDto } from '../../user/dtos/get-users.dto';
-import { Debtor } from './../../../generated/prisma/index.d';
+import { Debtor } from '../../../generated/prisma';
 import { PickType } from '@nestjs/mapped-types';
 import { BaseClientDto } from './base-client.dto';
 

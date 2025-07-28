@@ -42,13 +42,19 @@ export class DeleteClientService {
           where: { id },
         });
         return { message: 'Client deleted successfully', success: true };
-      } catch (_: unknown) {
+      } catch (error) {
+        if (error instanceof Error) {
+          throw error;
+        }
         throw new MyServicesError(
           'Error deleting client',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
-    } catch (_: unknown) {
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
       throw new InternalServerErrorException(
         'An unknown error occurred while try deleting the client',
       );

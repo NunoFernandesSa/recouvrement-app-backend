@@ -4,10 +4,10 @@ import { FindOneClientService } from './services/client-find-one.service';
 import { FindManyClientsService } from './services/client-find-many.service';
 import { CreateClientService } from './services/client-create.service';
 import { Injectable } from '@nestjs/common';
-import { UpdateClientDto } from './dto/update-client.dto';
-import { CreateClientDto } from './dto/create-client.dto';
+import { UpdateClientDto } from './dtos/update-client.dto';
+import { CreateClientDto } from './dtos/create-client.dto';
 import { RequestWithUserId } from 'src/common/requestWithUserId.interface';
-import { CreateClientResponseDto } from './dto/create-client-response.dto';
+import { CreateClientResponseDto } from './dtos/create-client-response.dto';
 
 @Injectable()
 export class ClientsService {

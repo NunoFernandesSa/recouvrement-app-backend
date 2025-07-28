@@ -4,8 +4,8 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { CreateClientDto } from '../dto/create-client.dto';
-import { CreateClientResponseDto } from '../dto/create-client-response.dto';
+import { CreateClientDto } from '../dtos/create-client.dto';
+import { CreateClientResponseDto } from '../dtos/create-client-response.dto';
 import { plainToInstance } from 'class-transformer';
 
 import { v4 as uuidv4 } from 'uuid';

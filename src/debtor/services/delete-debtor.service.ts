@@ -1,3 +1,5 @@
+import { HttpStatus, InternalServerErrorException } from '@nestjs/common';
+import MyServicesError from 'src/errors/my-services.error';
 import { PrismaService } from 'src/prisma.service';
 
 export class DeleteDebtorService {
@@ -5,14 +7,38 @@ export class DeleteDebtorService {
 
   async deleteDebtor(id: string): Promise<any> {
     try {
-      const debtor = await this.prisma.debtor.delete({
+      // Check if debtor exists
+      // If not, throw error
+      const existingDebtor = await this.prisma.debtor.findUnique({
         where: {
           id,
         },
       });
-      return debtor;
+
+      if (!existingDebtor) {
+        throw new MyServicesError('Debtor not found', HttpStatus.NOT_FOUND);
+      }
+
+      // delete debtor
+      const deletedDebtor = await this.prisma.debtor.delete({
+        where: {
+          id,
+        },
+      });
+
+      return {
+        data: deletedDebtor,
+        message: 'Debtor deleted successfully',
+        success: true,
+      };
     } catch (error) {
-      throw new Error('Failed to delete debtor');
+      if (error instanceof Error) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException(
+        'An unknown error occurred while try deleting the debtor',
+      );
     }
   }
 }

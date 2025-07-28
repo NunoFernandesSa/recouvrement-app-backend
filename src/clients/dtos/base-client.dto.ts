@@ -1,4 +1,4 @@
-import { Debtor } from './../../../generated/prisma/index.d';
+import { Debtor } from '../../../generated/prisma';
 import { Type } from 'class-transformer';
 import {
   IsNotEmpty,

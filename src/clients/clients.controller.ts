@@ -10,11 +10,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ClientsService } from './clients.service';
-import { UpdateClientDto } from './dto/update-client.dto';
-import { CreateClientDto } from './dto/create-client.dto';
+import { UpdateClientDto } from './dtos/update-client.dto';
+import { CreateClientDto } from './dtos/create-client.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RequestWithUserId } from 'src/common/requestWithUserId.interface';
-import { CreateClientResponseDto } from './dto/create-client-response.dto';
+import { CreateClientResponseDto } from './dtos/create-client-response.dto';
 import { ApiOperation } from '@nestjs/swagger';
 
 @UseGuards(JwtAuthGuard)

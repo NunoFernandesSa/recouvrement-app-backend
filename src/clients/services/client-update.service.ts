@@ -1,5 +1,5 @@
 import { PrismaService } from 'src/prisma.service';
-import { UpdateClientDto } from '../dto/update-client.dto';
+import { UpdateClientDto } from '../dtos/update-client.dto';
 import {
   HttpStatus,
   Injectable,
