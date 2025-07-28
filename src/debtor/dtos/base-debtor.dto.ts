@@ -3,19 +3,22 @@ import {
   IsArray,
   IsDate,
   IsEnum,
+  IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
 } from 'class-validator';
 import { DebtorStatus, DebtorType } from 'generated/prisma';
 
 export class BaseDebtorDto {
-  @IsUUID()
+  @IsNotEmpty()
+  @IsString()
   id: string;
 
+  @IsNotEmpty()
   @IsString()
   reference: string;
 
+  @IsNotEmpty()
   @IsString()
   name: string;
 
@@ -54,7 +57,8 @@ export class BaseDebtorDto {
   @IsEnum(DebtorStatus)
   status: DebtorStatus;
 
-  @IsUUID()
+  @IsOptional()
+  @IsString()
   clientId: string;
 
   @Type(() => Date)
