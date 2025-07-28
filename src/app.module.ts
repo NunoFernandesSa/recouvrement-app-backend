@@ -3,6 +3,7 @@ import { UserModule } from './user/user.module';
 import { ClientsModule } from './clients/clients.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { DebtorModule } from './debtor/debtor.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
     UserModule,
     ClientsModule,
     AuthModule,
+    DebtorModule,
   ],
   controllers: [],
   providers: [],
