@@ -34,7 +34,10 @@ export class ClientsService {
     return this.findOneClientService.findOneClient(id);
   }
 
-  async update(id: string, dto: UpdateClientDto): Promise<any> {
+  async update(
+    id: string,
+    dto: UpdateClientDto,
+  ): Promise<{ data: UpdateClientDto; message: string }> {
     return this.updateClientService.updateClient(id, dto);
   }
   async remove(id: string): Promise<object> {

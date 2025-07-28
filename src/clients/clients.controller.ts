@@ -56,11 +56,11 @@ export class ClientsController {
     summary: 'Update a client by ID',
     description: 'Update a client by ID for the current user',
   })
-  @Patch(':id')
+  @Patch(':id/update')
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateClientDto,
-  ): Promise<any> {
+  ): Promise<{ data: UpdateClientDto; message: string }> {
     return this.clientsService.update(id, dto);
   }
 

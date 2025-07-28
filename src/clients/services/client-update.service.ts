@@ -14,19 +14,26 @@ export class UpdateClientService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Service responsible for handling client update operations in the database
+   * Service responsible for handling client update operations in the database.
+   * Provides functionality to modify existing client records with new information.
    * @class UpdateClientService
    */
 
   /**
    * Updates an existing client's information in the database
    * @param id - The unique identifier (UUID) of the client to update
-   * @param dto - UpdateClientDto containing the client's updated information
-   * @returns The updated client data mapped to UpdateClientDto format
+   * @param dto - UpdateClientDto containing the client's updated information including:
+   *             name, email, phone, address, city, country, zipCode, siret, type, and notes
+   * @returns An object containing:
+   *          - data: The updated client information as UpdateClientDto
+   *          - message: Success confirmation message
    * @throws ClientsServiceError if client is not found (404) or update operation fails (500)
-   * @throws InternalServerErrorException for unexpected system errors
+   * @throws InternalServerErrorException for unexpected system errors during execution
    */
-  async updateClient(id: string, dto: UpdateClientDto) {
+  async updateClient(
+    id: string,
+    dto: UpdateClientDto,
+  ): Promise<{ data: UpdateClientDto; message: string }> {
     try {
       // Find the existing client by ID
       // If the client is not found, throw an error
@@ -35,45 +42,32 @@ export class UpdateClientService {
       });
 
       if (!existingClient) {
-        throw new ClientsServiceError('Client not found', HttpStatus.NOT_FOUND);
-      }
-
-      try {
-        const updatedClient = await this.prisma.client.update({
-          where: { id },
-          data: {
-            name: dto.name,
-            email: dto.email,
-            phone: dto.phone,
-            address: dto.address,
-            city: dto.city,
-            country: dto.country,
-            zipcode: dto.zipCode,
-            siret: dto.siret,
-            type: dto.type as ClientType,
-            notes: dto.notes,
-          },
-        });
-
-        try {
-          return plainToInstance(UpdateClientDto, updatedClient, {
-            excludeExtraneousValues: true,
-          });
-        } catch (_: unknown) {
-          throw new ClientsServiceError(
-            'Error transforming client data',
-            HttpStatus.INTERNAL_SERVER_ERROR,
-          );
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          throw error;
-        }
         throw new ClientsServiceError(
-          'Error updating client',
-          HttpStatus.INTERNAL_SERVER_ERROR,
+          `Client not found with ID: ${id}`,
+          HttpStatus.NOT_FOUND,
         );
       }
+
+      const updatedClient = await this.prisma.client.update({
+        where: { id },
+        data: {
+          name: dto.name,
+          email: dto.email,
+          phone: dto.phone,
+          address: dto.address,
+          city: dto.city,
+          country: dto.country,
+          zipcode: dto.zipCode,
+          siret: dto.siret,
+          type: dto.type as ClientType,
+          notes: dto.notes,
+        },
+      });
+
+      const updatedData = plainToInstance(UpdateClientDto, updatedClient, {
+        excludeExtraneousValues: true,
+      });
+      return { data: updatedData, message: 'Client updated successfully' };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
