@@ -13,6 +13,11 @@ export class CreateClientService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
+   * Service for create a client
+   * @class CreateClientService
+   */
+
+  /**
    * Creates a new client in the database
    * @param data - The client data transfer object containing client information
    * @param {string} data.internalRef - Internal reference for the client

@@ -10,6 +10,18 @@ import { PrismaService } from 'src/prisma.service';
 export class DeleteClientService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Service for deleting clients from the system
+   * @class DeleteClientService
+   */
+
+  /**
+   * Deletes a client from the database by their ID
+   * @param {string} id - The unique identifier of the client to delete
+   * @returns {Promise<object>} A promise that resolves to an object containing a success message
+   * @throws {ClientsServiceError} When client is not found or deletion fails
+   * @throws {InternalServerErrorException} When an unknown error occurs
+   */
   async deleteClient(id: string): Promise<object> {
     try {
       // Check if client exists
