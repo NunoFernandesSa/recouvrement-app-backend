@@ -56,7 +56,7 @@ export class BaseDebtorDto {
   })
   @IsOptional()
   @IsArray()
-  @IsString()
+  @IsString({ each: true })
   phone?: string;
 
   @ApiPropertyOptional({
@@ -126,9 +126,15 @@ export class BaseDebtorDto {
     example: 'efzfvqve06510vefccza',
   })
   @IsString()
+  @IsNotEmpty()
   clientId: string;
 
-  @ApiProperty({ description: 'Created at', type: Date, example: new Date() })
+  @ApiProperty({
+    description: 'Created at',
+    type: Date,
+    format: 'date-time',
+    example: '2025-07-30T17:00:00.000Z',
+  })
   @Type(() => Date)
   @IsDate()
   createdAt: Date;
@@ -136,7 +142,8 @@ export class BaseDebtorDto {
   @ApiProperty({
     description: 'Created at',
     type: Date,
-    example: new Date(),
+    format: 'date-time',
+    example: '2025-07-30T17:00:00.000Z',
   })
   @Type(() => Date)
   @IsDate()
