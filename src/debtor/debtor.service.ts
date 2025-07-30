@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { FindManyDebtorsService } from './services/find-many-debtors.service';
 import { FindOneDebtorService } from './services/find-one-debtor.service';
 import { DeleteDebtorService } from './services/delete-debtor.service';
+import { CreateDebtorDto } from './dtos/create-debtor.dto';
 
 @Injectable()
 export class DebtorService {
@@ -13,7 +14,7 @@ export class DebtorService {
     private readonly deleteDebtorService: DeleteDebtorService,
   ) {}
 
-  async create(data: any): Promise<any> {
+  async create(data: CreateDebtorDto): Promise<CreateDebtorDto> {
     return this.createDebtorService.createDebtor(data);
   }
 
