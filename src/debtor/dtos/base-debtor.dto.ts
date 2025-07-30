@@ -1,4 +1,4 @@
-import { ApiProperty, ApiSchema } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -10,78 +10,134 @@ import {
 } from 'class-validator';
 import { DebtorStatus, DebtorType } from 'generated/prisma';
 
-@ApiSchema({ name: 'BaseDebtorDto', description: 'Base debtor DTO' })
 export class BaseDebtorDto {
-  @ApiProperty({ description: 'Debtor id', type: String })
+  @ApiProperty({
+    description: 'Unique identifier of the debtor',
+    type: String,
+    example: 'efzfvqve06510vefccza',
+  })
   @IsNotEmpty()
   @IsString()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Internal Reference of the debtor',
+    type: String,
+    example: 'REF-123456',
+  })
   @IsNotEmpty()
   @IsString()
   reference: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Name of the debtor',
+    type: String,
+    example: 'John Doe',
+  })
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'List of debtor emails addresses',
+    type: [String],
+    isArray: true,
+    example: ['example@gmail.com'],
+  })
   @IsArray()
   @IsString({ each: true })
   email: string[];
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'List of debtor phones numbers',
+    type: String,
+    isArray: true,
+    example: ['0102030405'],
+  })
   @IsOptional()
   @IsArray()
   @IsString()
   phone?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'Debtor address',
+    type: String,
+    example: '1 rue de la paix',
+  })
   @IsOptional()
   @IsString()
   address?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'Debtor city',
+    type: String,
+    example: 'Paris',
+  })
   @IsOptional()
   @IsString()
   city?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'Debtor zipcode',
+    type: String,
+    example: '75000',
+  })
   @IsOptional()
   @IsString()
   zipcode?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'Debtor country',
+    type: String,
+    example: 'France',
+  })
   @IsOptional()
   @IsString()
   country?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description: 'Debtor siret',
+    type: String,
+    example: '12345678901234',
+  })
   @IsOptional()
   @IsString()
   siret?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Debtor type',
+    enum: DebtorType,
+    example: DebtorType.PROFESSIONAL,
+  })
   @IsEnum(DebtorType)
   type: DebtorType;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Debtor status',
+    enum: DebtorStatus,
+    example: DebtorStatus.ACTIVE,
+  })
   @IsEnum(DebtorStatus)
   status: DebtorStatus;
 
-  @ApiProperty()
-  @IsOptional()
+  @ApiProperty({
+    description: 'Client id',
+    type: String,
+    example: 'efzfvqve06510vefccza',
+  })
   @IsString()
   clientId: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Created at', type: Date, example: new Date() })
   @Type(() => Date)
   @IsDate()
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Created at',
+    type: Date,
+    example: new Date(),
+  })
   @Type(() => Date)
   @IsDate()
   updatedAt: Date;
