@@ -1,8 +1,7 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { BaseDebtorDto } from './base-debtor.dto';
-import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
-@ApiExtraModels(BaseDebtorDto)
 export class CreateDebtorDto extends OmitType(BaseDebtorDto, [
   'id',
   'createdAt',
