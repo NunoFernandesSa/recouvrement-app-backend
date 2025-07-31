@@ -26,6 +26,11 @@ export class DebtorController {
     return this.debtorService.findAll();
   }
 
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<any> {
+    return this.debtorService.findOne(id);
+  }
+
   @Delete(':id/delete')
   async delete(@Param('id') id: string): Promise<any> {
     return this.debtorService.delete(id);

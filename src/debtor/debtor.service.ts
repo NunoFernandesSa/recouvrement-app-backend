@@ -25,4 +25,8 @@ export class DebtorService {
   async delete(id: string): Promise<any> {
     return this.deleteDebtorService.deleteDebtor(id);
   }
+
+  async findOne(id: string): Promise<any> {
+    return this.findOneDebtorService.findOneDebtor(id);
+  }
 }
