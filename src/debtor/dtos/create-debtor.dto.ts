@@ -6,6 +6,7 @@ export class CreateDebtorDto extends OmitType(BaseDebtorDto, [
   'id',
   'createdAt',
   'updatedAt',
+  'clientId',
 ]) {
   @ApiProperty({
     description: 'Client ID linked to the debtor',

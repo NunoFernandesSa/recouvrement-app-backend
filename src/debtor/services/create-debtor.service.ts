@@ -1,9 +1,10 @@
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import MyServicesError from 'src/errors/my-services.error';
 import { PrismaService } from 'src/prisma.service';
 import { CreateDebtorDto } from '../dtos/create-debtor.dto';
 import { plainToInstance } from 'class-transformer';
 
+@Injectable()
 export class CreateDebtorService {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -31,6 +32,14 @@ export class CreateDebtorService {
       );
     }
 
+    // ckeck if the clientId is not empty
+    if (!data.clientId) {
+      throw new MyServicesError(
+        'Client ID is required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     try {
       // Check if the debtor already exists
       const existingDebtor = await this.prisma.debtor.findFirst({
@@ -43,9 +52,36 @@ export class CreateDebtorService {
         throw new MyServicesError('Debtor already exists', HttpStatus.CONFLICT);
       }
 
+      // check if the client exists in the database for the given clientId
+      const clientExists = await this.prisma.client.findUnique({
+        where: {
+          id: data.clientId,
+        },
+      });
+      if (!clientExists) {
+        throw new MyServicesError('Client not found', HttpStatus.NOT_FOUND);
+      }
+
       // Create the debtor
       const createdDebtor = await this.prisma.debtor.create({
-        data: data,
+        data: {
+          reference: data.reference,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          address: data.address,
+          city: data.city,
+          zipcode: data.zipcode,
+          country: data.country,
+          siret: data.siret,
+          type: data.type,
+          status: data.status,
+          client: {
+            connect: {
+              id: data.clientId,
+            },
+          },
+        },
       });
 
       return plainToInstance(CreateDebtorDto, createdDebtor);
