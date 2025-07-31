@@ -7,7 +7,32 @@ import { plainToInstance } from 'class-transformer';
 @Injectable()
 export class CreateDebtorService {
   constructor(private readonly prisma: PrismaService) {}
+  /**
+   * Service responsible for creating new debtors
+   * @class CreateDebtorService
+   */
 
+  /**
+   * Creates a new debtor with the provided information
+   * @param data - CreateDebtorDto containing the debtor details:
+   *  - reference: Unique identifier for the debtor
+   *  - name: Full name of the debtor
+   *  - email: Array of email addresses (at least one required)
+   *  - phone: Contact phone numbers (optional)
+   *  - address: Physical address (optional)
+   *  - city: City of residence (optional)
+   *  - zipcode: Postal code (optional)
+   *  - country: Country of residence (optional)
+   *  - siret: SIRET number for business entities (optional)
+   *  - type: Type of debtor (optional)
+   *  - status: Current status (optional)
+   *  - clientId: ID of the associated client
+   * @throws {MyServicesError} BAD_REQUEST (400) - When required fields are missing
+   * @throws {MyServicesError} CONFLICT (409) - When debtor reference already exists
+   * @throws {MyServicesError} NOT_FOUND (404) - When specified client doesn't exist
+   * @throws {MyServicesError} INTERNAL_SERVER_ERROR (500) - For unexpected errors
+   * @returns {Promise<CreateDebtorDto>} The newly created debtor information
+   */
   async createDebtor(data: CreateDebtorDto): Promise<CreateDebtorDto> {
     // ----- Validate the data -----
 

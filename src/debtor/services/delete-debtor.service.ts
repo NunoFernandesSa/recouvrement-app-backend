@@ -10,6 +10,18 @@ import { PrismaService } from 'src/prisma.service';
 export class DeleteDebtorService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Service for deleting Debtor from the system
+   * @class DeleteDebtorService
+   */
+
+  /**
+   * Deletes a debtor from the database by their ID
+   * @param {string} id - The unique identifier of the debtor to delete
+   * @returns {Promise<{message: string, success: boolean}>} A promise that resolves to an object containing a success message and status
+   * @throws {MyServicesError} When debtor is not found or deletion fails
+   * @throws {InternalServerErrorException} When an unknown error occurs
+   */
   async deleteDebtor(
     id: string,
   ): Promise<{ message: string; success: boolean }> {
