@@ -1,7 +1,12 @@
-import { HttpStatus, InternalServerErrorException } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import MyServicesError from 'src/errors/my-services.error';
 import { PrismaService } from 'src/prisma.service';
 
+@Injectable()
 export class DeleteDebtorService {
   constructor(private readonly prisma: PrismaService) {}
 

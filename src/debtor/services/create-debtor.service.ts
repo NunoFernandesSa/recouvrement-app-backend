@@ -50,7 +50,7 @@ export class CreateDebtorService {
 
       if (existingDebtor) {
         throw new MyServicesError(
-          `Debtor ${data.reference} already exists`,
+          `Debtor '${data.reference}' already exists`,
           HttpStatus.CONFLICT,
         );
       }
