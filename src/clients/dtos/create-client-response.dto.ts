@@ -45,9 +45,11 @@ export class CreateClientResponseDto extends PickType(BaseClientDto, [
   @ApiPropertyOptional({ example: '12345' })
   zipCode?: string | null;
 
-  @ApiProperty({ enum: ClientType, example: ClientType.PROFESSIONAL })
-  type: ClientTypes;
-
+  @ApiProperty({
+    enum: ClientType,
+    type: String,
+    example: ClientType.PROFESSIONAL,
+  })
   @ApiPropertyOptional({ example: ['Note 1', 'Note 2'] })
   notes?: string[];
 
