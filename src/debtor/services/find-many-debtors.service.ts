@@ -8,6 +8,20 @@ import { plainToInstance } from 'class-transformer';
 export class FindManyDebtorsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Service for retrieving multiple debtors
+   * @class FindManyDebtorsService
+   */
+
+  /**
+   * Service to retrieve multiple debtors from the database
+   *
+   * @remarks
+   * This service provides functionality to fetch all debtors with their associated client information
+   * @returns Promise<DebtorResponseDto[]> - Array of debtor objects transformed into DTOs
+   * @throws {MyServicesError}
+   * - With status NOT_FOUND (404) if no debtors are found in the database
+   */
   async findManyDebtors(): Promise<DebtorResponseDto[]> {
     const existingDebtors = await this.prisma.debtor.findMany({
       select: {
