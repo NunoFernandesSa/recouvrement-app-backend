@@ -27,7 +27,7 @@ export class DebtorController {
   }
 
   @Delete(':id/delete')
-  async delete(@Param() id: string): Promise<any> {
+  async delete(@Param('id') id: string): Promise<any> {
     return this.debtorService.delete(id);
   }
 }

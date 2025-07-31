@@ -5,5 +5,4 @@ export class CreateDebtorDto extends OmitType(BaseDebtorDto, [
   'id',
   'createdAt',
   'updatedAt',
-  'clientId',
 ]) {}

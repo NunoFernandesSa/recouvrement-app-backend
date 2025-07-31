@@ -10,35 +10,41 @@ import { PrismaService } from 'src/prisma.service';
 export class DeleteDebtorService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async deleteDebtor(id: string): Promise<any> {
+  async deleteDebtor(
+    id: string,
+  ): Promise<{ message: string; success: boolean }> {
     try {
       // Check if debtor exists
       // If not, throw error
       const existingDebtor = await this.prisma.debtor.findUnique({
         where: {
-          id,
+          id: id,
         },
       });
 
       if (!existingDebtor) {
-        throw new MyServicesError('Debtor not found', HttpStatus.NOT_FOUND);
+        throw new MyServicesError(`Debtor not found`, HttpStatus.NOT_FOUND);
       }
 
       // delete debtor
       const deletedDebtor = await this.prisma.debtor.delete({
         where: {
-          id,
+          id: id,
         },
       });
 
       return {
-        data: deletedDebtor,
-        message: 'Debtor deleted successfully',
+        message: `Debtor '${deletedDebtor.reference}' deleted successfully`,
         success: true,
       };
     } catch (error) {
+      console.error('Error deleting debtor:', error);
+
       if (error instanceof Error) {
-        throw error;
+        throw new MyServicesError(
+          error.message || 'Failed to delete debtor',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
 
       throw new InternalServerErrorException(
