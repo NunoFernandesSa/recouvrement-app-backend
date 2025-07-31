@@ -38,8 +38,6 @@ export class DeleteDebtorService {
         success: true,
       };
     } catch (error) {
-      console.error('Error deleting debtor:', error);
-
       if (error instanceof Error) {
         throw new MyServicesError(
           error.message || 'Failed to delete debtor',
