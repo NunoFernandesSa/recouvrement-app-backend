@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
   UseGuards,
@@ -18,6 +19,11 @@ export class DebtorController {
   @Post('new')
   async create(@Body() data: CreateDebtorDto): Promise<CreateDebtorDto> {
     return this.debtorService.create(data);
+  }
+
+  @Get()
+  async findAll(): Promise<any> {
+    return this.debtorService.findAll();
   }
 
   @Delete(':id/delete')

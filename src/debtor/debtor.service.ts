@@ -18,6 +18,10 @@ export class DebtorService {
     return this.createDebtorService.createDebtor(data);
   }
 
+  async findAll(): Promise<any> {
+    return this.findManyDebtorsService.findManyDebtors();
+  }
+
   async delete(id: string): Promise<any> {
     return this.deleteDebtorService.deleteDebtor(id);
   }
