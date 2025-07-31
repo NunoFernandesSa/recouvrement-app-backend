@@ -49,7 +49,10 @@ export class CreateDebtorService {
       });
 
       if (existingDebtor) {
-        throw new MyServicesError('Debtor already exists', HttpStatus.CONFLICT);
+        throw new MyServicesError(
+          `Debtor ${data.reference} already exists`,
+          HttpStatus.CONFLICT,
+        );
       }
 
       // check if the client exists in the database for the given clientId
