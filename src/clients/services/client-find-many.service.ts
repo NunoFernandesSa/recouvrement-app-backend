@@ -47,11 +47,14 @@ export class FindManyClientsService {
           user: {
             select: {
               id: true,
+              name: true,
             },
           },
           debtor: {
             select: {
               id: true,
+              reference: true,
+              name: true,
             },
           },
         },
