@@ -113,7 +113,7 @@ export class BaseClientDto {
   readonly type: ClientType;
 
   @IsOptional()
-  @IsString()
+  @IsString({ each: true })
   @ApiProperty({
     description: 'The notes of the client',
     type: String,

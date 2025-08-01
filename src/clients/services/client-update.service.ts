@@ -60,7 +60,13 @@ export class UpdateClientService {
           zipcode: dto.zipCode,
           siret: dto.siret,
           type: dto.type as ClientType,
-          notes: dto.notes,
+          notes: Array.isArray(dto.notes)
+            ? dto.notes.filter(
+                (note): note is string => typeof note === 'string',
+              )
+            : typeof dto.notes === 'string'
+              ? [dto.notes]
+              : [],
         },
       });
 
