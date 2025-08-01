@@ -39,9 +39,7 @@ export class CreateDebtService {
       });
 
       // return the created debt with the correct type
-      return plainToInstance(DebtResponseDto, createdDebt, {
-        excludeExtraneousValues: true,
-      });
+      return plainToInstance(DebtResponseDto, createdDebt);
     } catch (error) {
       if (error instanceof Error) {
         throw new MyServicesError(
