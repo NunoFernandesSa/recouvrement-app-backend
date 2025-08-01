@@ -97,7 +97,12 @@ export class CreateClientService {
       // Return the created client with the correct type
       return plainToInstance(CreateClientResponseDto, createdClient);
     } catch (error: any) {
-      console.log('Erreur lors de la création client:', error);
+      if (error instanceof Error) {
+        throw new MyServicesError(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
 
       throw new InternalServerErrorException(
         'Failed to create client',

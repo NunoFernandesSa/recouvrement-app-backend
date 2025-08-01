@@ -22,6 +22,7 @@ export class DeleteDebtorService {
    * @throws {MyServicesError} When debtor is not found or deletion fails
    * @throws {InternalServerErrorException} When an unknown error occurs
    */
+
   async deleteDebtor(
     id: string,
   ): Promise<{ message: string; success: boolean }> {
@@ -58,7 +59,7 @@ export class DeleteDebtorService {
       }
 
       throw new InternalServerErrorException(
-        'An unknown error occurred while try deleting the debtor',
+        'An unknown error occurred while trying to delete the debtor',
       );
     }
   }

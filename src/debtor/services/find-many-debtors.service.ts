@@ -13,18 +13,17 @@ export class FindManyDebtorsService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Service for retrieving multiple debtors
+   * Service for retrieving multiple debtors from the database
    * @class FindManyDebtorsService
-   */
-
-  /**
-   * Service to retrieve multiple debtors from the database
    *
-   * @remarks
-   * This service provides functionality to fetch all debtors with their associated client information
-   * @returns Promise<DebtorResponseDto[]> - Array of debtor objects transformed into DTOs
+   * @description
+   * This service provides functionality to fetch all debtors with their associated client information,
+   * including reference numbers, contact details, and status.
+   *
+   * @returns Promise<DebtorResponseDto[]> Array of debtor records transformed into DTOs
    * @throws {MyServicesError}
-   * - With status NOT_FOUND (404) if no debtors are found in the database
+   * - With status NOT_FOUND (404) if no debtors exist in the database
+   * - With status INTERNAL_SERVER_ERROR (500) if a database error occurs
    */
   async findManyDebtors(): Promise<DebtorResponseDto[]> {
     try {
@@ -68,7 +67,7 @@ export class FindManyDebtorsService {
       }
 
       throw new InternalServerErrorException(
-        'An unknown error occurred while try deleting the debtor',
+        'An unknown error occurred while trying to find debtors',
       );
     }
   }

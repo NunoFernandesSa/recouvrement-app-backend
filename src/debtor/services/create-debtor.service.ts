@@ -116,12 +116,15 @@ export class CreateDebtorService {
     } catch (error) {
       // Handle any errors that occurred during the process
       if (error instanceof Error) {
-        throw error;
+        throw new MyServicesError(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
 
       // Handle other types of errors
       throw new MyServicesError(
-        'Failed to create debtor',
+        'An unknown error occurred while trying to create debtor',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
