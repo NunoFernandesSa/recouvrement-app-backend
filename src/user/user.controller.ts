@@ -71,4 +71,15 @@ export class UserController {
   async deleteUser(@Param('id') id: string): Promise<object> {
     return this.userService.delete(id);
   }
+
+  // Custom routes
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/actions')
+  @ApiOperation({
+    summary: 'Get user actions',
+    description: 'Retrieve a list of actions performed by a user',
+  })
+  async getUserActions(@Param('id') id: string): Promise<any> {
+    return this.userService.findUserActions(id);
+  }
 }

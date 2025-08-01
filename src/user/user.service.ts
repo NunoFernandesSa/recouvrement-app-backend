@@ -8,6 +8,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { CreateUserResponseDto } from './dtos/create-user-response.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
+import { UserFindManyActionsService } from './services/user-find-many-actions.service';
 
 @Injectable()
 export class UserService {
@@ -17,6 +18,7 @@ export class UserService {
     private readonly getUserById: UserReadOneService,
     private readonly updateUser: UserUpdateService,
     private readonly deleteUser: UserDeleteService,
+    private readonly findManyActions: UserFindManyActionsService,
   ) {}
 
   async create(dto: CreateUserDto): Promise<CreateUserResponseDto> {
@@ -37,5 +39,9 @@ export class UserService {
 
   async delete(id: string): Promise<object> {
     return await this.deleteUser.deleteUser(id);
+  }
+
+  async findUserActions(id: string): Promise<any> {
+    return await this.findManyActions.findManyActions(id);
   }
 }

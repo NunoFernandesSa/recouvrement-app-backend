@@ -7,6 +7,7 @@ import { UserReadManyService } from './services/user-read-many.service';
 import { UserReadOneService } from './services/user-read-one.service';
 import { UserUpdateService } from './services/user-update.service';
 import { UserDeleteService } from './services/user-delete.service';
+import { UserFindManyActionsService } from './services/user-find-many-actions.service';
 
 @Module({
   imports: [],
@@ -19,6 +20,7 @@ import { UserDeleteService } from './services/user-delete.service';
     UserReadOneService,
     UserUpdateService,
     UserDeleteService,
+    UserFindManyActionsService,
   ],
   exports: [UserService],
 })
