@@ -18,6 +18,29 @@ export class UpdateDebtorService {
       where: {
         id: id,
       },
+      select: {
+        id: true,
+        reference: true,
+        name: true,
+        email: true,
+        phone: true,
+        address: true,
+        city: true,
+        zipcode: true,
+        country: true,
+        siret: true,
+        type: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        client: {
+          select: {
+            id: true,
+            internalRef: true,
+            name: true,
+          },
+        },
+      },
     });
 
     if (!existingDebtor) {
@@ -32,6 +55,7 @@ export class UpdateDebtorService {
       },
       data: data,
     });
+
     if (!updatedDebtor) {
       throw new MyServicesError(
         `Debtor not updated`,
@@ -39,8 +63,13 @@ export class UpdateDebtorService {
       );
     }
 
-    const debtorResponse = plainToInstance(UpdateDebtorDto, updatedDebtor);
+    const updatedData = plainToInstance(UpdateDebtorDto, updatedDebtor, {
+      excludeExtraneousValues: true,
+    });
 
-    return { data: debtorResponse, message: 'Debtor updated successfully' };
+    return {
+      data: updatedData,
+      message: 'Debtor updated successfully',
+    };
   }
 }
