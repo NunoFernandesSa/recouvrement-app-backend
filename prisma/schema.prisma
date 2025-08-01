@@ -206,13 +206,26 @@ model Debtor {
 /**
  * ----- Debt model -----
  * Represents a debt record in the debt collection system.
- * Each debt has amounts (HT excluding tax, TTC including tax, paid, remaining, overdue), a due date, and a state.
- * The state can be PENDING (awaiting payment), PAID (fully settled), or OVERDUE (past due date).
- * Created and updated timestamps are automatically managed.
- * Each debt is associated with a debtor and tracks payment progress.
- * Amounts are stored as Decimal values with 2 decimal places for precise financial calculations.
- * The dueDate field helps determine if a debt becomes overdue.
- * Optional invoice number and notes fields for additional tracking.
+ * Each debt has:
+ * - Amounts:
+ * - HT (excluding tax)
+ * - TTC (including tax)
+ * - Paid amount
+ * - Remaining balance
+ * - Overdue amount
+ * - Due date for payment deadline
+ * - State (PENDING/PAID/OVERDUE)
+ * - Optional invoice number and notes
+ * - Last reminder sent timestamp
+ * Features:
+ * - Automatic timestamp management (created/updated)
+ * - Decimal precision (2 decimal places) for financial accuracy
+ * - Payment progress tracking
+ * - Debtor association required
+ * - State transitions:
+ * - PENDING: Awaiting payment
+ * - PAID: Fully settled
+ * - OVERDUE: Past due date
  */
 model Debt {
   id                 String    @id @default(cuid())
@@ -224,7 +237,7 @@ model Debt {
   invoiceNumber      String?   @db.VarChar(255)
   dueDate            DateTime
   state              DebtState @default(PENDING)
-  notes              String?
+  notes              String[]
   lastReminderSentAt DateTime?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
