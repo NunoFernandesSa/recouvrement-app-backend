@@ -92,7 +92,7 @@ enum DebtState {
  * - actionDetails: One-to-many relation with ActionDetail model
  */
 model User {
-  id        String   @id @default(cuid())
+  id        String   @id @unique @default(cuid())
   email     String   @unique @db.VarChar(255)
   name      String?
   password  String   @db.VarChar(255)
@@ -132,7 +132,7 @@ model User {
  * - debtor: One-to-many with Debtor
  */
 model Client {
-  id          String     @id @default(cuid())
+  id          String     @id @unique @default(cuid())
   internalRef String     @unique @db.VarChar(255)
   name        String
   email       String[]
@@ -179,7 +179,7 @@ model Client {
  * - debt: One-to-many with Debt
  */
 model Debtor {
-  id        String       @id @default(cuid())
+  id        String       @id @unique @default(cuid())
   reference String       @unique @db.VarChar(255)
   name      String
   email     String[]
@@ -228,13 +228,13 @@ model Debtor {
  * - OVERDUE: Past due date
  */
 model Debt {
-  id                 String    @id @default(cuid())
+  id                 String    @id @unique @default(cuid())
+  invoiceNumber      String    @unique @db.VarChar(255)
   amountHT           Decimal   @db.Decimal(10, 2)
   amountTTC          Decimal   @db.Decimal(10, 2)
   amountPaid         Decimal?  @default(0) @db.Decimal(10, 2)
   amountRemaining    Decimal?  @db.Decimal(10, 2)
   amountOverdue      Decimal?  @db.Decimal(10, 2)
-  invoiceNumber      String?   @db.VarChar(255)
   dueDate            DateTime
   state              DebtState @default(PENDING)
   notes              String[]
@@ -270,7 +270,7 @@ model Debt {
  * - details: One-to-many with ActionDetail
  */
 model Action {
-  id          String      @id @default(cuid())
+  id          String      @id @unique @default(cuid())
   title       String
   description String?
   state       ActionState @default(PENDING)
@@ -307,7 +307,7 @@ model Action {
  * - action: Many-to-one relation with Action model
  */
 model ActionDetail {
-  id        String           @id @default(cuid())
+  id        String           @id @unique @default(cuid())
   type      ActionDetailType
   note      String?          @db.VarChar(255)
   createdAt DateTime         @default(now())

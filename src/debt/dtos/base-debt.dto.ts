@@ -18,6 +18,11 @@ export class BaseDebtDto {
   @IsNotEmpty()
   id: string;
 
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  invoiceNumber: string;
+
   @IsNumber()
   @Type(() => Number)
   @IsPositive()
@@ -45,11 +50,6 @@ export class BaseDebtDto {
   @Type(() => Number)
   @Min(0)
   amountOverdue?: number;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  invoiceNumber: string;
 
   @IsDate()
   @Type(() => Date)
