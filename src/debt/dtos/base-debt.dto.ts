@@ -2,7 +2,6 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDate,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -11,15 +10,14 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
-import { DebtState } from 'generated/prisma';
 
 export class BaseDebtDto {
   @IsString()
   @IsNotEmpty()
   id: string;
 
-  @IsOptional()
   @IsString()
+  @IsNotEmpty()
   @MaxLength(255)
   invoiceNumber: string;
 
@@ -54,9 +52,6 @@ export class BaseDebtDto {
   @IsDate()
   @Type(() => Date)
   dueDate: Date;
-
-  @IsEnum(DebtState)
-  state: string;
 
   @IsOptional()
   @IsArray()

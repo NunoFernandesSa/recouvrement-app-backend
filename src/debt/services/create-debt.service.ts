@@ -4,13 +4,52 @@ import { DebtResponseDto } from '../dtos/debt-response.dto';
 import { PrismaService } from 'src/prisma.service';
 import MyServicesError from 'src/errors/my-services.error';
 import { plainToInstance } from 'class-transformer';
-import { DebtState } from 'generated/prisma';
 
 @Injectable()
 export class CreateDebtService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createDebt(id: string, data: CreateDebtDto): Promise<DebtResponseDto> {
+    // check if invoiceNumber exists
+    if (!data.invoiceNumber) {
+      throw new MyServicesError(
+        'Invoice number is required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // check if amount exists
+    if (!data.amountHT) {
+      throw new MyServicesError('Amount is required', HttpStatus.BAD_REQUEST);
+    }
+    // check if amountHT is a number and greater than 0
+    if (typeof data.amountHT !== 'number' || data.amountHT <= 0) {
+      throw new MyServicesError(
+        'AmountHT must be a number greater than 0',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // check if amountTTC exists
+    if (!data.amountTTC) {
+      throw new MyServicesError(
+        'Amount TTC is required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    // check if amountTTC is a number and greater than 0
+    if (typeof data.amountTTC !== 'number' || data.amountTTC <= 0) {
+      throw new MyServicesError(
+        'AmountTTC must be a number greater than 0',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // check if dueDate exists
+    if (!data.dueDate) {
+      throw new MyServicesError('dueDate is required', HttpStatus.BAD_REQUEST);
+    }
+
     try {
       // check if debt already exists
       // if it does, throw an error
@@ -34,7 +73,10 @@ export class CreateDebtService {
       const createdDebt = await this.prisma.debt.create({
         data: {
           ...data,
-          state: data.state as DebtState,
+          state: 'PENDING',
+        },
+        include: {
+          debtor: true,
         },
       });
 
@@ -49,7 +91,7 @@ export class CreateDebtService {
       }
 
       throw new MyServicesError(
-        'An error occurred while creating the debt',
+        'An unknow error occurred while creating the debt',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

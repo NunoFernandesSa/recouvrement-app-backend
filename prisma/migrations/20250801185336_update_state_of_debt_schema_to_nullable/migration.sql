@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Debt" ALTER COLUMN "state" DROP NOT NULL;
