@@ -4,6 +4,7 @@ import { ClientsModule } from './clients/clients.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { DebtorModule } from './debtor/debtor.module';
+import { DebtModule } from './debt/debt.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DebtorModule } from './debtor/debtor.module';
     ClientsModule,
     AuthModule,
     DebtorModule,
+    DebtModule,
   ],
   controllers: [],
   providers: [],
