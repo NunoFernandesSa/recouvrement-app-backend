@@ -1,4 +1,7 @@
-import { OmitType } from '@nestjs/mapped-types';
+import { Exclude } from 'class-transformer';
 import { BaseDebtDto } from './base-debt.dto';
 
-export class DebtResponseDto extends OmitType(BaseDebtDto, ['id']) {}
+export class DebtResponseDto extends BaseDebtDto {
+  @Exclude()
+  declare debtorId: string;
+}
