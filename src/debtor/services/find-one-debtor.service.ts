@@ -46,6 +46,13 @@ export class FindOneDebtorService {
               name: true,
             },
           },
+          debt: {
+            select: {
+              id: true,
+              state: true,
+              invoiceNumber: true,
+            },
+          },
         },
       });
       if (!existingDebtor) {

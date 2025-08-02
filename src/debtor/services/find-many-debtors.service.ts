@@ -50,6 +50,13 @@ export class FindManyDebtorsService {
               name: true,
             },
           },
+          debt: {
+            select: {
+              id: true,
+              state: true,
+              invoiceNumber: true,
+            },
+          },
         },
       });
 
