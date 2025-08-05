@@ -256,6 +256,8 @@ model Debt {
  * - A state (PENDING, APPROVED, or REJECTED)
  * - Optional due date and completion date
  * - Created and updated timestamps (auto-managed)
+ * - Optional priority level (LOW, MEDIUM, HIGH)
+ * - Optional cost tracking for action expenses
  * The action is linked to:
  * - A debtor (required)
  * - An optional user who is assigned to it
@@ -264,10 +266,12 @@ model Debt {
  * - Communication records (emails, calls, SMS)
  * - Physical actions (letters, visits)
  * - Other collection-related activities
+ * - Outcome tracking and follow-up notes
  * Relations:
  * - debtor: Many-to-one with Debtor
  * - user: Optional many-to-one with User
  * - details: One-to-many with ActionDetail
+ * - Optional parent/child action relationships
  */
 model Action {
   id          String      @id @unique @default(cuid())
@@ -280,7 +284,6 @@ model Action {
   updatedAt   DateTime    @updatedAt
 
   // ----- relations -----
-
   debtorId String
   debtor   Debtor @relation(fields: [debtorId], references: [id])
 
