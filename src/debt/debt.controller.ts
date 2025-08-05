@@ -8,11 +8,8 @@ export class DebtController {
   constructor(private readonly debtService: DebtService) {}
 
   @Post('new')
-  async create(
-    @Param('id') id: string,
-    @Body() data: CreateDebtDto,
-  ): Promise<DebtResponseDto> {
-    return this.debtService.createDebt(id, data);
+  async create(@Body() data: CreateDebtDto): Promise<DebtResponseDto> {
+    return this.debtService.createDebt(data);
   }
 
   @Get(':id')

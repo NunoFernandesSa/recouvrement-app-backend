@@ -11,8 +11,8 @@ export class DebtService {
     private readonly findOneDebtService: FindOneDebtService,
   ) {}
 
-  async createDebt(id: string, data: CreateDebtDto): Promise<DebtResponseDto> {
-    return this.createDebtService.createDebt(id, data);
+  async createDebt(data: CreateDebtDto): Promise<DebtResponseDto> {
+    return this.createDebtService.createDebt(data);
   }
 
   async findOneDebt(id: string): Promise<DebtResponseDto> {

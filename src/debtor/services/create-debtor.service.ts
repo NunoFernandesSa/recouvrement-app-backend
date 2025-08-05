@@ -8,63 +8,32 @@ import { plainToInstance } from 'class-transformer';
 export class CreateDebtorService {
   constructor(private readonly prisma: PrismaService) {}
   /**
-   * Service responsible for creating new debtors
+   * Service responsible for creating and managing debtor records
    * @class CreateDebtorService
    */
 
   /**
-   * Creates a new debtor with the provided information
-   * @param data - CreateDebtorDto containing the debtor details:
-   *  - reference: Unique identifier for the debtor
-   *  - name: Full name of the debtor
-   *  - email: Array of email addresses (at least one required)
-   *  - phone: Contact phone numbers (optional)
-   *  - address: Physical address (optional)
-   *  - city: City of residence (optional)
-   *  - zipcode: Postal code (optional)
-   *  - country: Country of residence (optional)
-   *  - siret: SIRET number for business entities (optional)
-   *  - type: Type of debtor (optional)
-   *  - status: Current status (optional)
-   *  - clientId: ID of the associated client
-   * @throws {MyServicesError} BAD_REQUEST (400) - When required fields are missing
-   * @throws {MyServicesError} CONFLICT (409) - When debtor reference already exists
-   * @throws {MyServicesError} NOT_FOUND (404) - When specified client doesn't exist
-   * @throws {MyServicesError} INTERNAL_SERVER_ERROR (500) - For unexpected errors
-   * @returns {Promise<CreateDebtorDto>} The newly created debtor information
+   * Creates a new debtor entry in the system
+   * @param data - CreateDebtorDto containing the debtor information:
+   *  - reference: Unique identifier for the debtor record
+   *  - name: Full name or business name of the debtor
+   *  - email: Array of contact email addresses (minimum 1 required)
+   *  - phone: Array of contact phone numbers (optional)
+   *  - address: Street address or mailing address (optional)
+   *  - city: City/municipality of residence (optional)
+   *  - zipcode: Postal/ZIP code (optional)
+   *  - country: Country of residence or registration (optional)
+   *  - siret: French business registration number (optional)
+   *  - type: Classification of debtor (optional)
+   *  - status: Current account status (optional)
+   *  - clientId: Associated client account identifier
+   * @throws {MyServicesError} BAD_REQUEST (400) - Missing or invalid required fields
+   * @throws {MyServicesError} CONFLICT (409) - Duplicate debtor reference detected
+   * @throws {MyServicesError} NOT_FOUND (404) - Referenced client account not found
+   * @throws {MyServicesError} INTERNAL_SERVER_ERROR (500) - System or database error
+   * @returns {Promise<CreateDebtorDto>} Newly created debtor record details
    */
   async createDebtor(data: CreateDebtorDto): Promise<CreateDebtorDto> {
-    // ----- Validate the data -----
-
-    // Check if the reference is not empty
-    if (!data.reference) {
-      throw new MyServicesError(
-        'Reference is required',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    // Check if the name is not empty
-    if (!data.name) {
-      throw new MyServicesError('Name is required', HttpStatus.BAD_REQUEST);
-    }
-
-    // Check if the email is not empty
-    if (data.email.length === 0) {
-      throw new MyServicesError(
-        'At least one email is required',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    // ckeck if the clientId is not empty
-    if (!data.clientId) {
-      throw new MyServicesError(
-        'Client ID is required',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     try {
       // Check if the debtor already exists
       const existingDebtor = await this.prisma.debtor.findFirst({

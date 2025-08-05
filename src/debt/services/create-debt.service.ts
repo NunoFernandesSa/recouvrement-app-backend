@@ -8,48 +8,20 @@ import { plainToInstance } from 'class-transformer';
 @Injectable()
 export class CreateDebtService {
   constructor(private readonly prisma: PrismaService) {}
+  /**
+   * Service responsible for creating and managing debt records
+   * @class CreateDebtService
+   */
 
-  async createDebt(id: string, data: CreateDebtDto): Promise<DebtResponseDto> {
-    // check if invoiceNumber exists
-    if (!data.invoiceNumber) {
-      throw new MyServicesError(
-        'Invoice number is required',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    // check if amount exists
-    if (!data.amountHT) {
-      throw new MyServicesError('Amount is required', HttpStatus.BAD_REQUEST);
-    }
-    // check if amountHT is a number and greater than 0
-    if (typeof data.amountHT !== 'number' || data.amountHT <= 0) {
-      throw new MyServicesError(
-        'AmountHT must be a number greater than 0',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    // check if amountTTC exists
-    if (!data.amountTTC) {
-      throw new MyServicesError(
-        'Amount TTC is required',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    // check if amountTTC is a number and greater than 0
-    if (typeof data.amountTTC !== 'number' || data.amountTTC <= 0) {
-      throw new MyServicesError(
-        'AmountTTC must be a number greater than 0',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    // check if dueDate exists
-    if (!data.dueDate) {
-      throw new MyServicesError('dueDate is required', HttpStatus.BAD_REQUEST);
-    }
-
+  /**
+   * Creates a new debt record in the system
+   * @param data - The debt information to create
+   * @returns A promise that resolves to the created debt with debtor information
+   * @throws {MyServicesError}
+   * - With status CONFLICT if a debt with the same invoice number already exists
+   * - With status INTERNAL_SERVER_ERROR if any other error occurs during creation
+   */
+  async createDebt(data: CreateDebtDto): Promise<DebtResponseDto> {
     try {
       // check if debt already exists
       // if it does, throw an error
