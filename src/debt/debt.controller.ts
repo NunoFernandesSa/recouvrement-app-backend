@@ -12,6 +12,11 @@ export class DebtController {
     return this.debtService.createDebt(data);
   }
 
+  @Get()
+  async findMany(): Promise<DebtResponseDto[]> {
+    return this.debtService.findManyDebts();
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<DebtResponseDto> {
     return this.debtService.findOneDebt(id);

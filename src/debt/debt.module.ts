@@ -1,3 +1,4 @@
+import { FindManyDebtsService } from './services/find-many-debts.service';
 import { CreateDebtService } from './services/create-debt.service';
 import { Module } from '@nestjs/common';
 import { DebtController } from './debt.controller';
@@ -11,6 +12,7 @@ import { FindOneDebtService } from './services/find-one-debt.service';
     DebtService,
     CreateDebtService,
     FindOneDebtService,
+    FindManyDebtsService,
     PrismaService,
   ],
   exports: [DebtService],

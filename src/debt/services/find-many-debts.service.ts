@@ -1,0 +1,49 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma.service';
+import { DebtResponseDto } from '../dtos/debt-response.dto';
+import MyServicesError from 'src/errors/my-services.error';
+import { plainToInstance } from 'class-transformer';
+
+@Injectable()
+export class FindManyDebtsService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findManyDebts(): Promise<DebtResponseDto[]> {
+    try {
+      const existingDebts = await this.prisma.debt.findMany({
+        select: {
+          id: true,
+          invoiceNumber: true,
+          amountHT: true,
+          amountTTC: true,
+          amountPaid: true,
+          amountRemaining: true,
+          amountOverdue: true,
+          dueDate: true,
+          state: true,
+          notes: true,
+          lastReminderSentAt: true,
+          createdAt: true,
+          updatedAt: true,
+          debtor: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      if (!existingDebts || existingDebts.length === 0) {
+        throw new MyServicesError('No debts found');
+      }
+
+      return plainToInstance(DebtResponseDto, existingDebts);
+    } catch (error) {
+      throw new MyServicesError(
+        error instanceof Error ? error.message : 'Error finding many debts',
+      );
+    }
+  }
+}
