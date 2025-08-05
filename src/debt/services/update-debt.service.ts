@@ -23,17 +23,27 @@ export class UpdateDebtService {
         throw new MyServicesError('Debt not found', HttpStatus.NOT_FOUND);
       }
 
-      const amountRemaining =
-        Number(existingDebt.amountTTC) - (data.amountPaid ?? 0);
+      // ----- Calculate the new payment -----
+      const newPayment: number = data.amountPaid ?? 0;
 
+      // ----- Calculate the updated amount paid -----
+      const updatedAmountPaid =
+        Number(existingDebt.amountPaid ?? 0) + newPayment;
+
+      // ----- Calculate the amount remaining -----
+      const amountRemaining =
+        Number(existingDebt.amountTTC) - updatedAmountPaid;
+
+      // ----- Update the debt -----
       const updatedDebt = await this.prisma.debt.update({
         where: {
           id,
         },
         data: {
           ...data,
-          updatedAt: new Date(),
+          amountPaid: updatedAmountPaid,
           amountRemaining: amountRemaining,
+          updatedAt: new Date(),
         },
       });
 
