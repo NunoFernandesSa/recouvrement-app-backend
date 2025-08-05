@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import {
   IsDate,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -11,46 +12,42 @@ import { ActionState } from 'generated/prisma';
 export class ActionBaseDto {
   @IsString()
   @IsNotEmpty()
-  id: string;
-
-  @IsString()
-  @IsNotEmpty()
   @MaxLength(255)
   title: string;
 
   @IsString()
   @IsOptional()
-  description: string;
+  description?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  state: ActionState;
+  @IsEnum(ActionState)
+  @IsOptional()
+  state?: ActionState;
 
   @IsDate()
   @IsOptional()
   @Type(() => Date)
-  dueDate: Date;
+  dueDate?: Date;
 
   @IsDate()
   @IsOptional()
   @Type(() => Date)
-  completedAt: Date;
+  completedAt?: Date;
 
   @IsDate()
-  @IsNotEmpty()
+  @IsOptional()
   @Type(() => Date)
-  createdAt: Date;
+  createdAt?: Date;
 
   @IsDate()
-  @IsNotEmpty()
+  @IsOptional()
   @Type(() => Date)
-  updatedAt: Date;
+  updatedAt?: Date;
 
   @IsString()
   @IsNotEmpty()
   debtorId: string;
 
   @IsString()
-  @IsNotEmpty()
-  userId: string;
+  @IsOptional()
+  userId?: string;
 }
