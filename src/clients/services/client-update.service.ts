@@ -64,6 +64,7 @@ export class UpdateClientService {
             : typeof dto.notes === 'string'
               ? [dto.notes]
               : [],
+          updatedAt: new Date(),
         },
       });
 
