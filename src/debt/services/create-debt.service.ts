@@ -55,15 +55,10 @@ export class CreateDebtService {
       // return the created debt with the correct type
       return plainToInstance(DebtResponseDto, createdDebt);
     } catch (error) {
-      if (error instanceof Error) {
-        throw new MyServicesError(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-
       throw new MyServicesError(
-        'An unknow error occurred while creating the debt',
+        error instanceof Error
+          ? error.message
+          : 'An unknow error occurred while creating the debt',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

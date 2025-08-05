@@ -1,8 +1,4 @@
-import {
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import MyServicesError from 'src/errors/my-services.error';
 import { PrismaService } from 'src/prisma.service';
 
@@ -18,9 +14,8 @@ export class DeleteClientService {
   /**
    * Deletes a client from the database by their ID
    * @param {string} id - The unique identifier of the client to delete
-   * @returns {Promise<object>} A promise that resolves to an object containing a success message
-   * @throws {ClientsServiceError} When client is not found or deletion fails
-   * @throws {InternalServerErrorException} When an unknown error occurs
+   * @returns {Promise<{message: string, success: boolean}>} A promise that resolves to an object containing a success message and status
+   * @throws {MyServicesError} When client is not found (404) or deletion fails (500)
    */
   async deleteClient(id: string): Promise<object> {
     try {
@@ -43,20 +38,19 @@ export class DeleteClientService {
         });
         return { message: 'Client deleted successfully', success: true };
       } catch (error) {
-        if (error instanceof Error) {
-          throw error;
-        }
         throw new MyServicesError(
-          'Error deleting client',
+          error instanceof Error
+            ? error.message
+            : `Error deleting client with ID: |${id}|`,
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
     } catch (error) {
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw new InternalServerErrorException(
-        'An unknown error occurred while try deleting the client',
+      throw new MyServicesError(
+        error instanceof Error
+          ? error.message
+          : `An unknown error occurred while try deleting the client with ID: |${id}|`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

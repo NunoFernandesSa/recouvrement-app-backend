@@ -1,8 +1,4 @@
-import {
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateClientDto } from '../dtos/create-client.dto';
 import { CreateClientResponseDto } from '../dtos/create-client-response.dto';
@@ -24,16 +20,15 @@ export class CreateClientService {
   /**
    * Creates a new client in the database
    * @param data - The client data transfer object containing client information
-   * @param {string} data.internalRef - Internal reference for the client
    * @param {string} data.name - Client's name
    * @param {string[]} data.email - Array of client email addresses
-   * @param {string} data.userId - ID of the user creating the client
-   * @throws {Error} When internal reference is empty or missing
-   * @throws {Error} When name is empty or missing
-   * @throws {Error} When email array is empty or not an array
-   * @throws {Error} When client with provided email already exists
-   * @throws {InternalServerErrorException} When database operation fails
-   * @returns {Promise<CreateClientResponseDto>} The created client data with assigned ID
+   * @param req - Request object containing authenticated user information
+   * @throws {MyServicesError} When name is empty or missing
+   * @throws {MyServicesError} When email array is empty or not an array
+   * @throws {MyServicesError} When user is not found
+   * @throws {MyServicesError} When client with generated internal reference already exists
+   * @throws {MyServicesError} When database operation fails
+   * @returns {Promise<CreateClientResponseDto>} The created client data with assigned ID and generated internal reference
    */
   async createClient(
     data: CreateClientDto,
@@ -96,17 +91,12 @@ export class CreateClientService {
 
       // Return the created client with the correct type
       return plainToInstance(CreateClientResponseDto, createdClient);
-    } catch (error: any) {
-      if (error instanceof Error) {
-        throw new MyServicesError(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-
-      throw new InternalServerErrorException(
-        'Failed to create client',
-        error instanceof Error ? error.message : 'Unknown error',
+    } catch (error) {
+      throw new MyServicesError(
+        error instanceof Error
+          ? error.message
+          : 'An unknow error occurred while creating the client',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
