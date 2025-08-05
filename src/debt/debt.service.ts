@@ -4,6 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateDebtService } from './services/create-debt.service';
 import { CreateDebtDto } from './dtos/create-debt.dto';
 import { DebtResponseDto } from './dtos/debt-response.dto';
+import { UpdateDebtService } from './services/update-debt.service';
+import { UpdateDebtDto } from './dtos/update-debt.dto';
 
 @Injectable()
 export class DebtService {
@@ -11,6 +13,7 @@ export class DebtService {
     private readonly createDebtService: CreateDebtService,
     private readonly findOneDebtService: FindOneDebtService,
     private readonly findManyDebtsService: FindManyDebtsService,
+    private readonly updateDebtService: UpdateDebtService,
   ) {}
 
   async createDebt(data: CreateDebtDto): Promise<DebtResponseDto> {
@@ -23,5 +26,12 @@ export class DebtService {
 
   async findManyDebts(): Promise<DebtResponseDto[]> {
     return this.findManyDebtsService.findManyDebts();
+  }
+
+  async updateDebt(
+    id: string,
+    data: UpdateDebtDto,
+  ): Promise<{ message: string; data: UpdateDebtDto }> {
+    return this.updateDebtService.updateDebt(id, data);
   }
 }

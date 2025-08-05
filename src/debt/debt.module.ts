@@ -5,6 +5,7 @@ import { DebtController } from './debt.controller';
 import { DebtService } from './debt.service';
 import { PrismaService } from 'src/prisma.service';
 import { FindOneDebtService } from './services/find-one-debt.service';
+import { UpdateDebtService } from './services/update-debt.service';
 
 @Module({
   controllers: [DebtController],
@@ -13,6 +14,7 @@ import { FindOneDebtService } from './services/find-one-debt.service';
     CreateDebtService,
     FindOneDebtService,
     FindManyDebtsService,
+    UpdateDebtService,
     PrismaService,
   ],
   exports: [DebtService],
