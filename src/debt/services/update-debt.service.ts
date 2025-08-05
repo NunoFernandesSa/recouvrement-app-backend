@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma.service';
 import { UpdateDebtDto } from '../dtos/update-debt.dto';
 import MyServicesError from 'src/errors/my-services.error';
 import { plainToInstance } from 'class-transformer';
+import { DebtState } from 'generated/prisma';
 
 @Injectable()
 export class UpdateDebtService {
@@ -34,6 +35,8 @@ export class UpdateDebtService {
       const amountRemaining =
         Number(existingDebt.amountTTC) - updatedAmountPaid;
 
+      const statePaid = updatedAmountPaid >= Number(existingDebt.amountTTC);
+
       // ----- Update the debt -----
       const updatedDebt = await this.prisma.debt.update({
         where: {
@@ -43,6 +46,7 @@ export class UpdateDebtService {
           ...data,
           amountPaid: updatedAmountPaid,
           amountRemaining: amountRemaining,
+          state: statePaid ? DebtState.PAID : DebtState.PENDING,
           updatedAt: new Date(),
         },
       });
