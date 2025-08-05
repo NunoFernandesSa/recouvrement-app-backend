@@ -82,6 +82,7 @@ export class UserUpdateService {
           name: updateUserDto.name ?? existingUser.name ?? null,
           email: updateUserDto.email ?? existingUser.email,
           role: updateUserDto.role ?? existingUser.role,
+          updatedAt: new Date(),
         },
       });
 

@@ -53,7 +53,10 @@ export class UpdateDebtorService {
       where: {
         id: id,
       },
-      data: data,
+      data: {
+        ...data,
+        updatedAt: new Date(),
+      },
     });
 
     if (!updatedDebtor) {
