@@ -1,10 +1,6 @@
 import { PrismaService } from 'src/prisma.service';
 import { UpdateClientDto } from '../dtos/update-client.dto';
-import {
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { ClientType } from 'generated/prisma';
 import { plainToInstance } from 'class-transformer';
 import MyServicesError from 'src/errors/my-services.error';
@@ -78,8 +74,11 @@ export class UpdateClientService {
       if (error instanceof Error) {
         throw error;
       }
-      throw new InternalServerErrorException(
-        'An unknown error occurred while updating the client',
+      throw new MyServicesError(
+        error instanceof Error
+          ? error.message
+          : 'An unknown error occurred while updating the client',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

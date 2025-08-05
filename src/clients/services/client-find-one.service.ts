@@ -62,7 +62,9 @@ export class FindOneClientService {
       }
 
       throw new MyServicesError(
-        `Failed to retrieve clients. Error: ${error instanceof Error ? error.message : String(error)}`,
+        error instanceof Error
+          ? error.message
+          : `An unknown error occurred while finding the client`,
       );
     }
   }

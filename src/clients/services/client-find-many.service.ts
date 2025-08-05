@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { GetClientDto } from '../dtos/get-client-dot';
 import { plainToInstance } from 'class-transformer';
@@ -14,17 +14,23 @@ export class FindManyClientsService {
    */
 
   /**
-   * Retrieves all clients from the database with their associated user and debtor IDs
+   * Retrieves all clients from the database with their associated user and debtor information
    *
-   * @description Fetches a list of all clients with their complete information including
-   * internal references, contact details, and associated relationships
+   * @description Fetches a list of all clients with their complete information including:
+   * - Internal references (id, internalRef)
+   * - Contact details (name, email, phone)
+   * - Address information (address, city, zipcode, country)
+   * - Business details (siret, type)
+   * - Additional info (notes)
+   * - Timestamps (createdAt, updatedAt)
+   * - Associated user details (id, name)
+   * - Associated debtor details (id, reference, name)
    *
    * @returns {Promise<GetClientDto[]>} A promise that resolves to an array of GetClientDto objects
    * containing the client information
    *
-   * @throws {ClientsServiceError} When no clients are found in the database or if there's an error
-   * during the retrieval process
-   * @throws {HttpException} When an HTTP-related error occurs during the database query
+   * @throws {MyServicesError} When no clients are found (NOT_FOUND) or if there's an error
+   * during the retrieval process (INTERNAL_SERVER_ERROR)
    */
   async findAllClients(): Promise<GetClientDto[]> {
     try {
@@ -69,12 +75,11 @@ export class FindManyClientsService {
 
       return plainToInstance(GetClientDto, existingClients);
     } catch (error) {
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
       throw new MyServicesError(
-        `Failed to retrieve clients. Error: ${error instanceof Error ? error.message : String(error)}`,
+        error instanceof Error
+          ? error.message
+          : `Failed to retrieve clients. Error: ${String(error)}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
