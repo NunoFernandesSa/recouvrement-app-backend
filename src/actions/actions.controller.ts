@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ActionsService } from './actions.service';
 import { CreateActionDto } from './dtos/create-action.dto';
 import { ActionResponseDto } from './dtos/action-response.dto';
@@ -19,5 +19,10 @@ export class ActionsController {
       throw new Error('User ID is required');
     }
     return this.actionsService.createAction(user.id, data);
+  }
+
+  @Get()
+  async findMany(): Promise<ActionResponseDto[]> {
+    return this.actionsService.findManyActions();
   }
 }

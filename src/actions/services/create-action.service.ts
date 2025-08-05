@@ -9,7 +9,17 @@ import { ActionState } from 'generated/prisma';
 @Injectable()
 export class CreateActionService {
   constructor(private readonly prisma: PrismaService) {}
+  /**
+   * Service responsible for creating new actions in the system
+   * @class CreateActionService
+   */
 
+  /**
+   * Creates a new action for a given user
+   * @param userId - The ID of the user creating the action
+   * @param data - The action data containing title, description, state, etc.
+   * @returns Promise containing the created action details
+   */
   async createAction(
     userId: string,
     data: CreateActionDto,
