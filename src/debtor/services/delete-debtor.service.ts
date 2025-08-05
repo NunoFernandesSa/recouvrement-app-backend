@@ -1,8 +1,4 @@
-import {
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import MyServicesError from 'src/errors/my-services.error';
 import { PrismaService } from 'src/prisma.service';
 
@@ -18,11 +14,9 @@ export class DeleteDebtorService {
   /**
    * Deletes a debtor from the database by their ID
    * @param {string} id - The unique identifier of the debtor to delete
-   * @returns {Promise<{message: string, success: boolean}>} A promise that resolves to an object containing a success message and status
-   * @throws {MyServicesError} When debtor is not found or deletion fails
-   * @throws {InternalServerErrorException} When an unknown error occurs
+   * @returns {Promise<{message: string, success: boolean}>} A promise that resolves with a success message and status
+   * @throws {MyServicesError} If debtor is not found (404) or deletion fails (500)
    */
-
   async deleteDebtor(
     id: string,
   ): Promise<{ message: string; success: boolean }> {
@@ -51,15 +45,11 @@ export class DeleteDebtorService {
         success: true,
       };
     } catch (error) {
-      if (error instanceof Error) {
-        throw new MyServicesError(
-          error.message || 'Failed to delete debtor',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-
-      throw new InternalServerErrorException(
-        'An unknown error occurred while trying to delete the debtor',
+      throw new MyServicesError(
+        error instanceof Error
+          ? error.message
+          : 'An unknown error occurred while trying to delete the debtor',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

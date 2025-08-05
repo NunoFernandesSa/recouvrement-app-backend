@@ -20,11 +20,12 @@ export class UpdateClientService {
    * @param id - The unique identifier (UUID) of the client to update
    * @param dto - UpdateClientDto containing the client's updated information including:
    *             name, email, phone, address, city, country, zipCode, siret, type, and notes
+   *             Notes can be provided as a string or array of strings
    * @returns An object containing:
-   *          - data: The updated client information as UpdateClientDto
-   *          - message: Success confirmation message
-   * @throws ClientsServiceError if client is not found (404) or update operation fails (500)
-   * @throws InternalServerErrorException for unexpected system errors during execution
+   *          - data: The updated client information transformed to UpdateClientDto
+   *          - message: Success confirmation message ("Client updated successfully")
+   * @throws MyServicesError with status 404 if client is not found
+   * @throws MyServicesError with status 500 if update operation fails
    */
   async updateClient(
     id: string,

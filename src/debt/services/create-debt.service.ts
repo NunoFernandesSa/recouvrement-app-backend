@@ -14,12 +14,12 @@ export class CreateDebtService {
    */
 
   /**
-   * Creates a new debt record in the system
-   * @param data - The debt information to create
-   * @returns A promise that resolves to the created debt with debtor information
+   * Creates a new debt record in the system with associated debtor information
+   * @param data - The debt information containing invoice number and debtor details
+   * @returns A promise containing the created debt record with included debtor data
    * @throws {MyServicesError}
-   * - With status CONFLICT if a debt with the same invoice number already exists
-   * - With status INTERNAL_SERVER_ERROR if any other error occurs during creation
+   * - CONFLICT (409) - When attempting to create a debt with an existing invoice number
+   * - INTERNAL_SERVER_ERROR (500) - For any unexpected errors during debt creation
    */
   async createDebt(data: CreateDebtDto): Promise<DebtResponseDto> {
     try {

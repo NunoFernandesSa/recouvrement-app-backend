@@ -1,8 +1,4 @@
-import {
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import MyServicesError from 'src/errors/my-services.error';
 import { PrismaService } from 'src/prisma.service';
 import { DebtorResponseDto } from '../dtos/debtor-response.dto';
@@ -16,6 +12,13 @@ export class FindOneDebtorService {
    * @class FindOneDebtorService
    */
 
+  /**
+   * Finds a debtor by their ID and returns their information
+   * @param id - The unique identifier of the debtor to find
+   * @returns A Promise containing the debtor's information in DebtorResponseDto format
+   * @throws MyServicesError with NOT_FOUND status if debtor doesn't exist
+   * @throws MyServicesError with INTERNAL_SERVER_ERROR status if any other error occurs
+   */
   async findOneDebtor(id: string): Promise<DebtorResponseDto> {
     try {
       // Check if debtor exists
@@ -61,15 +64,11 @@ export class FindOneDebtorService {
 
       return plainToInstance(DebtorResponseDto, existingDebtor);
     } catch (error) {
-      if (error instanceof Error) {
-        throw new MyServicesError(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-
-      throw new InternalServerErrorException(
-        'An unknown error occurred while trying to find the debtor',
+      throw new MyServicesError(
+        error instanceof Error
+          ? error.message
+          : 'An unknown error occurred while trying to find the debtor',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

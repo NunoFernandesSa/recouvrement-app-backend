@@ -1,8 +1,4 @@
-import {
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import MyServicesError from 'src/errors/my-services.error';
 import { PrismaService } from 'src/prisma.service';
 import { DebtorResponseDto } from '../dtos/debtor-response.dto';
@@ -15,15 +11,21 @@ export class FindManyDebtorsService {
   /**
    * Service for retrieving multiple debtors from the database
    * @class FindManyDebtorsService
+   */
+
+  /**
+   * Retrieves all debtors from the database with their associated information
    *
    * @description
-   * This service provides functionality to fetch all debtors with their associated client information,
-   * including reference numbers, contact details, and status.
+   * Fetches all debtors along with:
+   * - Client details (ID, internal reference, name)
+   * - Debtor information (reference, contact details, status)
+   * - Associated debt records (ID, state, invoice number)
    *
-   * @returns Promise<DebtorResponseDto[]> Array of debtor records transformed into DTOs
+   * @returns Promise<DebtorResponseDto[]> Array of debtor records with their complete information
    * @throws {MyServicesError}
-   * - With status NOT_FOUND (404) if no debtors exist in the database
-   * - With status INTERNAL_SERVER_ERROR (500) if a database error occurs
+   * - NOT_FOUND (404) if no debtors exist in the database
+   * - INTERNAL_SERVER_ERROR (500) if a database error occurs during the operation
    */
   async findManyDebtors(): Promise<DebtorResponseDto[]> {
     try {
@@ -66,15 +68,11 @@ export class FindManyDebtorsService {
 
       return plainToInstance(DebtorResponseDto, existingDebtors);
     } catch (error) {
-      if (error instanceof Error) {
-        throw new MyServicesError(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-
-      throw new InternalServerErrorException(
-        'An unknown error occurred while trying to find debtors',
+      throw new MyServicesError(
+        error instanceof Error
+          ? error.message
+          : 'An unknown error occurred while trying to find debtors',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

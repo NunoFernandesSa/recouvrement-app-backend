@@ -83,17 +83,10 @@ export class CreateDebtorService {
 
       return plainToInstance(CreateDebtorDto, createdDebtor);
     } catch (error) {
-      // Handle any errors that occurred during the process
-      if (error instanceof Error) {
-        throw new MyServicesError(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-
-      // Handle other types of errors
       throw new MyServicesError(
-        'An unknown error occurred while trying to create debtor',
+        error instanceof Error
+          ? error.message
+          : 'An unknown error occurred while trying to create debtor',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

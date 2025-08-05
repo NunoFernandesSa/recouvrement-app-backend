@@ -17,8 +17,8 @@ export class FindOneClientService {
    * Finds a single client by their ID
    * @param id - The unique identifier of the client to find
    * @returns The client data transformed to CreateClientResponseDto
-   * @throws HttpException if client is not found
-   * @throws ClientsServiceError if there is an error during retrieval
+   * @throws HttpException if client is not found (404)
+   * @throws MyServicesError if there is an error during retrieval
    */
   async findOneClient(id: string) {
     try {
