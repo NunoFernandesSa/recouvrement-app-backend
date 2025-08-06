@@ -5,9 +5,20 @@ import { PrismaService } from 'src/prisma.service';
 import { ActionResponseDto } from '../dtos/action-response.dto';
 
 @Injectable()
+/**
+ * Service responsible for retrieving detailed information about a specific action
+ * @class FindOneActionDetailService
+ * @description Provides functionality to fetch a single action with its associated debtor and user details
+ */
 export class FindOneActionDetailService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Retrieves detailed information about a specific action by its ID
+   * @param id - The unique identifier of the action to find
+   * @returns Promise containing the action details in ActionResponseDto format
+   * @throws MyServicesError if action is not found or if an error occurs during the process
+   */
   async findOneActionDetail(id: string): Promise<ActionResponseDto> {
     try {
       const existingAction = await this.prisma.action.findUnique({
