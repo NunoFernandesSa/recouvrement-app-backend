@@ -7,6 +7,7 @@ import { FindOneDebtorService } from './services/find-one-debtor.service';
 import { DeleteDebtorService } from './services/delete-debtor.service';
 import { PrismaService } from 'src/prisma.service';
 import { UpdateDebtorService } from './services/update-debtor.service';
+import { FindOneDebtorDetailService } from './services/find-one-debtor-detail.service';
 
 @Module({
   controllers: [DebtorController],
@@ -15,6 +16,7 @@ import { UpdateDebtorService } from './services/update-debtor.service';
     CreateDebtorService,
     FindManyDebtorsService,
     FindOneDebtorService,
+    FindOneDebtorDetailService,
     DeleteDebtorService,
     UpdateDebtorService,
     PrismaService,
