@@ -5,22 +5,22 @@ import { CreateClientResponseDto } from '../dtos/create-client-response.dto';
 import MyServicesError from 'src/errors/my-services.error';
 
 @Injectable()
-export class FindOneClientService {
+export class FindOneClientDetailService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Service for retrieving a client from the system
-   * @class FindOneClientService
+   * Service responsible for retrieving detailed client information from the database
+   * @class FindOneClientDetailService
    */
 
   /**
-   * Finds a single client by their ID and returns their information
-   * @param id - The unique identifier of the client to find
-   * @returns A CreateClientResponseDto containing the client's data
-   * @throws HttpException with status 404 if the client cannot be found
-   * @throws MyServicesError if there is an internal error during the database query
+   * Retrieves detailed information for a single client by their ID
+   * @param id - The unique identifier of the client to retrieve
+   * @returns A CreateClientResponseDto object containing the client's complete information
+   * @throws HttpException with 404 status if no client is found with the given ID
+   * @throws MyServicesError if a database or internal error occurs during the query
    */
-  async findOneClient(id: string) {
+  async findOneClientDetail(id: string) {
     try {
       // Find the client by ID in the database
       const existingClient = await this.prisma.client.findUnique({
@@ -35,8 +35,25 @@ export class FindOneClientService {
           city: true,
           country: true,
           zipcode: true,
+          siret: true,
           type: true,
           notes: true,
+          createdAt: true,
+          updatedAt: true,
+          debtor: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            },
+          },
         },
       });
 
@@ -54,7 +71,7 @@ export class FindOneClientService {
       throw new MyServicesError(
         error instanceof Error
           ? error.message
-          : `An unknown error occurred while finding the client`,
+          : `An unknown error occurred while finding the client detail`,
       );
     }
   }

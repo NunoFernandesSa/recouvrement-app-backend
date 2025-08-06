@@ -14,17 +14,15 @@ export class FindManyClientsService {
    */
 
   /**
-   * Retrieves all clients from the database with their associated user and debtor information
+   * Retrieves all clients from the database
    *
-   * @description Fetches a list of all clients with their complete information including:
+   * @description Fetches a list of all clients with their basic information including:
    * - Internal references (id, internalRef)
    * - Contact details (name, email, phone)
    * - Address information (address, city, zipcode, country)
    * - Business details (siret, type)
    * - Additional info (notes)
    * - Timestamps (createdAt, updatedAt)
-   * - Associated user details (id, name)
-   * - Associated debtor details (id, reference, name)
    *
    * @returns {Promise<GetClientDto[]>} A promise that resolves to an array of GetClientDto objects
    * containing the client information
@@ -50,19 +48,6 @@ export class FindManyClientsService {
           notes: true,
           createdAt: true,
           updatedAt: true,
-          user: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          debtor: {
-            select: {
-              id: true,
-              reference: true,
-              name: true,
-            },
-          },
         },
       });
 

@@ -8,6 +8,7 @@ import { UpdateClientDto } from './dtos/update-client.dto';
 import { CreateClientDto } from './dtos/create-client.dto';
 import { RequestWithUserId } from 'src/common/requestWithUserId.interface';
 import { CreateClientResponseDto } from './dtos/create-client-response.dto';
+import { FindOneClientDetailService } from './services/find-one-client-detail.service';
 
 @Injectable()
 export class ClientsService {
@@ -15,6 +16,7 @@ export class ClientsService {
     private readonly createClientService: CreateClientService,
     private readonly findManyClientsService: FindManyClientsService,
     private readonly findOneClientService: FindOneClientService,
+    private readonly findOneClientDetailService: FindOneClientDetailService,
     private readonly updateClientService: UpdateClientService,
     private readonly deleteClientService: DeleteClientService,
   ) {}
@@ -32,6 +34,10 @@ export class ClientsService {
 
   async findOne(id: string): Promise<any> {
     return this.findOneClientService.findOneClient(id);
+  }
+
+  async findOneDetail(id: string): Promise<any> {
+    return this.findOneClientDetailService.findOneClientDetail(id);
   }
 
   async update(

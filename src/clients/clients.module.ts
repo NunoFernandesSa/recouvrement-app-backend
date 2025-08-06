@@ -7,6 +7,7 @@ import { FindOneClientService } from './services/client-find-one.service';
 import { UpdateClientService } from './services/client-update.service';
 import { DeleteClientService } from './services/client-delete.service';
 import { PrismaService } from 'src/prisma.service';
+import { FindOneClientDetailService } from './services/find-one-client-detail.service';
 
 @Module({
   imports: [],
@@ -16,6 +17,7 @@ import { PrismaService } from 'src/prisma.service';
     CreateClientService,
     FindManyClientsService,
     FindOneClientService,
+    FindOneClientDetailService,
     UpdateClientService,
     DeleteClientService,
     PrismaService,
