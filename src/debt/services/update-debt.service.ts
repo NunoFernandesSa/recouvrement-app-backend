@@ -34,7 +34,10 @@ export class UpdateDebtService {
         Number(existingDebt.amountTTC) - updatedAmountPaid;
 
       // check if the debt is paid
-      const statePaid = updatedAmountPaid >= Number(existingDebt.amountTTC);
+      const statePaid =
+        Number(updatedAmountPaid) < Number(existingDebt.amountTTC)
+          ? DebtState.PENDING
+          : DebtState.PAID;
 
       // ----- Update the debt -----
       const updatedDebt = await this.prisma.debt.update({
@@ -45,11 +48,7 @@ export class UpdateDebtService {
           ...data,
           amountPaid: updatedAmountPaid,
           amountRemaining: amountRemaining,
-          state:
-            data.state ??
-            (statePaid
-              ? DebtState.PAID
-              : (existingDebt.state ?? DebtState.PENDING)),
+          state: data.state ?? statePaid,
           updatedAt: new Date(),
         },
         select: {
