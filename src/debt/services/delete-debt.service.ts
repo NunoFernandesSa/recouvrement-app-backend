@@ -31,6 +31,7 @@ export class DeleteDebtService {
         HttpStatus.NOT_FOUND,
       );
     }
+
     try {
       const deletedDebt = await this.prisma.debt.delete({
         where: { id },
