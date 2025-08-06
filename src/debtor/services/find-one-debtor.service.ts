@@ -13,11 +13,12 @@ export class FindOneDebtorService {
    */
 
   /**
-   * Finds a debtor by their ID and returns their information
-   * @param id - The unique identifier of the debtor to find
-   * @returns A Promise containing the debtor's information in DebtorResponseDto format
-   * @throws MyServicesError with NOT_FOUND status if debtor doesn't exist
-   * @throws MyServicesError with INTERNAL_SERVER_ERROR status if any other error occurs
+   * Retrieves a single debtor record by their unique identifier
+   * @param id - The unique identifier (UUID) of the debtor to retrieve
+   * @returns Promise<DebtorResponseDto> - A promise that resolves to the debtor's complete information
+   * @throws {MyServicesError}
+   * - With NOT_FOUND (404) status if the debtor does not exist in the database
+   * - With INTERNAL_SERVER_ERROR (500) status if a database or system error occurs
    */
   async findOneDebtor(id: string): Promise<DebtorResponseDto> {
     try {
@@ -54,6 +55,14 @@ export class FindOneDebtorService {
               id: true,
               state: true,
               invoiceNumber: true,
+            },
+          },
+          actions: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              state: true,
             },
           },
         },

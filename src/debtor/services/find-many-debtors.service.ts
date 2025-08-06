@@ -14,15 +14,17 @@ export class FindManyDebtorsService {
    */
 
   /**
-   * Retrieves all debtors from the database with their associated information
+   * Retrieves all debtors from the database
    *
    * @description
-   * Fetches all debtors along with:
-   * - Client details (ID, internal reference, name)
-   * - Debtor information (reference, contact details, status)
-   * - Associated debt records (ID, state, invoice number)
+   * Fetches all debtors with their basic information including:
+   * - Reference number
+   * - Name and contact details (email, phone)
+   * - Address information (street, city, zipcode, country)
+   * - Business details (SIRET number, type)
+   * - Status and timestamps
    *
-   * @returns Promise<DebtorResponseDto[]> Array of debtor records with their complete information
+   * @returns Promise<DebtorResponseDto[]> Array of debtor records
    * @throws {MyServicesError}
    * - NOT_FOUND (404) if no debtors exist in the database
    * - INTERNAL_SERVER_ERROR (500) if a database error occurs during the operation
@@ -45,20 +47,6 @@ export class FindManyDebtorsService {
           status: true,
           createdAt: true,
           updatedAt: true,
-          client: {
-            select: {
-              id: true,
-              internalRef: true,
-              name: true,
-            },
-          },
-          debt: {
-            select: {
-              id: true,
-              state: true,
-              invoiceNumber: true,
-            },
-          },
         },
       });
 
