@@ -1,3 +1,4 @@
+import { DeleteActionService } from './services/delete-action.service';
 import { Injectable } from '@nestjs/common';
 import { CreateActionService } from './services/create-action.service';
 import { FindManyActionsService } from './services/find-many-actions.service';
@@ -13,6 +14,7 @@ export class ActionsService {
     private readonly findManyActionsService: FindManyActionsService,
     private readonly findOneActionService: FindOneActionService,
     private readonly findOneActionDetailService: FindOneActionDetailService,
+    private readonly deleteActionService: DeleteActionService,
   ) {}
 
   async createAction(
@@ -32,5 +34,11 @@ export class ActionsService {
 
   async findOneActionDetail(id: string): Promise<ActionResponseDto> {
     return this.findOneActionDetailService.findOneActionDetail(id);
+  }
+
+  async deleteAction(
+    id: string,
+  ): Promise<{ message: string; success: boolean }> {
+    return this.deleteActionService.deleteAction(id);
   }
 }

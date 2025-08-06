@@ -5,6 +5,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -61,5 +62,16 @@ export class ActionsController {
     @Param('id') id: string,
   ): Promise<ActionResponseDto> {
     return this.actionsService.findOneActionDetail(id);
+  }
+
+  @ApiOperation({
+    summary: 'Delete an action by ID',
+    description: 'Delete a specific action record by its unique ID',
+  })
+  @Delete(':id')
+  async deleteAction(
+    @Param('id') id: string,
+  ): Promise<{ message: string; success: boolean }> {
+    return this.actionsService.deleteAction(id);
   }
 }
