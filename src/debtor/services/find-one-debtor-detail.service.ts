@@ -8,7 +8,7 @@ import { DebtorResponseDto } from '../dtos/debtor-response.dto';
 export class FindOneDebtorDetailService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findOneDetail(id: string): Promise<DebtorResponseDto> {
+  async findOneDebtorDetail(id: string): Promise<DebtorResponseDto> {
     try {
       // Check if debtor exists
       // If not, throw error

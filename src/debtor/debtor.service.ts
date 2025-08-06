@@ -6,6 +6,8 @@ import { FindOneDebtorService } from './services/find-one-debtor.service';
 import { DeleteDebtorService } from './services/delete-debtor.service';
 import { CreateDebtorDto } from './dtos/create-debtor.dto';
 import { UpdateDebtorDto } from './dtos/update-debtor.dto';
+import { DebtorResponseDto } from './dtos/debtor-response.dto';
+import { FindOneDebtorDetailService } from './services/find-one-debtor-detail.service';
 
 @Injectable()
 export class DebtorService {
@@ -13,6 +15,7 @@ export class DebtorService {
     private readonly createDebtorService: CreateDebtorService,
     private readonly findManyDebtorsService: FindManyDebtorsService,
     private readonly findOneDebtorService: FindOneDebtorService,
+    private readonly findOneDebtorDetailService: FindOneDebtorDetailService,
     private readonly deleteDebtorService: DeleteDebtorService,
     private readonly updateDebtorService: UpdateDebtorService,
   ) {}
@@ -27,6 +30,10 @@ export class DebtorService {
 
   async findOne(id: string): Promise<any> {
     return this.findOneDebtorService.findOneDebtor(id);
+  }
+
+  async findOneDetail(id: string): Promise<DebtorResponseDto> {
+    return this.findOneDebtorDetailService.findOneDebtorDetail(id);
   }
 
   async update(
