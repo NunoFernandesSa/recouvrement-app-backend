@@ -7,7 +7,16 @@ import { plainToInstance } from 'class-transformer';
 @Injectable()
 export class FindManyDebtsService {
   constructor(private readonly prisma: PrismaService) {}
+  /**
+   * Finds all debts in the system
+   * @class FindManyDebtsService
+   */
 
+  /**
+   * Retrieves all debts from the database with their associated details
+   * @returns {Promise<DebtResponseDto[]>} Array of debt objects transformed into DTOs, including invoice numbers, amounts, states and dates
+   * @throws {MyServicesError} When no debts are found in the database or if there's an error during data retrieval
+   */
   async findManyDebts(): Promise<DebtResponseDto[]> {
     try {
       const existingDebts = await this.prisma.debt.findMany({

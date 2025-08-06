@@ -8,7 +8,25 @@ import { DebtState } from 'generated/prisma';
 @Injectable()
 export class UpdateDebtService {
   constructor(private readonly prisma: PrismaService) {}
+  /**
+   * Updates a debt record in the database
+   * @class UpdateDebtService
+   */
 
+  /**
+   * Updates a debt record with new payment information and status
+   * @param id - The unique identifier of the debt to update
+   * @param data - The DTO containing the update information
+   * @returns An object containing a success message and the updated debt data
+   * @throws MyServicesError if debt is not found or update fails
+   *
+   * This method:
+   * - Validates the debt exists
+   * - Calculates new payment amounts and remaining balance
+   * - Updates payment status based on amount paid
+   * - Updates the debt record with new information
+   * - Returns the updated debt data
+   */
   async updateDebt(
     id: string,
     data: UpdateDebtDto,
