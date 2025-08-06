@@ -23,8 +23,27 @@ export class FindOneDebtService {
       // find the debt in the database and check if it exists
       const existingDebt = await this.prisma.debt.findUnique({
         where: { id },
-        include: {
-          debtor: true,
+        select: {
+          id: true,
+          invoiceNumber: true,
+          amountHT: true,
+          amountTTC: true,
+          amountPaid: true,
+          amountRemaining: true,
+          amountOverdue: true,
+          dueDate: true,
+          state: true,
+          notes: true,
+          lastReminderSentAt: true,
+          createdAt: true,
+          updatedAt: true,
+          debtor: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
         },
       });
 
