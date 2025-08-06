@@ -8,6 +8,21 @@ import { DebtorResponseDto } from '../dtos/debtor-response.dto';
 export class FindOneDebtorDetailService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Service for retrieving a single debtor with detailed information from the database
+   * @class FindOneDebtorDetailService
+   */
+
+  /**
+   * Retrieves detailed information for a single debtor by ID
+   *
+   * @param {string} id - Unique identifier of the debtor
+   * @returns {Promise<DebtorResponseDto>} Detailed debtor information including associated client, debt and actions
+   *
+   * @throws {MyServicesError}
+   * - HttpStatus.NOT_FOUND if debtor does not exist
+   * - HttpStatus.INTERNAL_SERVER_ERROR if database query fails
+   */
   async findOneDebtorDetail(id: string): Promise<DebtorResponseDto> {
     try {
       // Check if debtor exists
