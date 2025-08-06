@@ -20,20 +20,6 @@ export class FindManyActionsService {
           completedAt: true,
           createdAt: true,
           updatedAt: true,
-          debtor: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
         },
       });
 

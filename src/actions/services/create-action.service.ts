@@ -44,18 +44,12 @@ export class CreateActionService {
             select: {
               id: true,
               name: true,
-              email: true,
-              phone: true,
-              address: true,
-              createdAt: true,
-              updatedAt: true,
             },
           },
           user: {
             select: {
               id: true,
               name: true,
-              email: true,
             },
           },
         },
