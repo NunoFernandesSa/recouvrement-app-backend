@@ -45,6 +45,15 @@ export class DebtController {
   }
 
   @ApiOperation({
+    summary: 'Get a debt detail by ID',
+    description: 'Retrieve a specific debt record detail by its unique ID',
+  })
+  @Get(':id/detail')
+  async findOneDetail(@Param('id') id: string): Promise<DebtResponseDto> {
+    return this.debtService.findOneDebtDetail(id);
+  }
+
+  @ApiOperation({
     summary: 'Update a debt by ID',
     description: 'Update a specific debt record by its unique ID',
   })

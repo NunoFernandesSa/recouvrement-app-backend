@@ -1,24 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import MyServicesError from 'src/errors/my-services.error';
 import { PrismaService } from 'src/prisma.service';
 import { DebtResponseDto } from '../dtos/debt-response.dto';
-import MyServicesError from 'src/errors/my-services.error';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
-export class FindOneDebtService {
+export class FindOneDebtDetailService {
   constructor(private readonly prisma: PrismaService) {}
-  /**
-   * Finds a single debt by its ID on the database
-   * @class FindOneDebtService
-   */
 
-  /**
-   * Finds a debt by its ID in the database
-   * @param id - The unique identifier of the debt to find
-   * @returns A promise that resolves to the debt response DTO containing the debt details
-   * @throws {MyServicesError} When debt is not found (404) or if an unexpected error occurs during retrieval (500)
-   */
-  async findOneDebt(id: string): Promise<DebtResponseDto> {
+  async findOneDebtDetail(id: string): Promise<DebtResponseDto> {
     try {
       // find the debt in the database and check if it exists
       const existingDebt = await this.prisma.debt.findUnique({
@@ -37,6 +27,24 @@ export class FindOneDebtService {
           lastReminderSentAt: true,
           createdAt: true,
           updatedAt: true,
+          debtor: {
+            select: {
+              id: true,
+              reference: true,
+              name: true,
+              email: true,
+              phone: true,
+              address: true,
+              city: true,
+              zipcode: true,
+              country: true,
+              siret: true,
+              type: true,
+              status: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
         },
       });
 
@@ -54,7 +62,7 @@ export class FindOneDebtService {
       }
 
       throw new MyServicesError(
-        'An unexpected error occurred while retrieving the debt',
+        'An unexpected error occurred while retrieving the debt detail',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
