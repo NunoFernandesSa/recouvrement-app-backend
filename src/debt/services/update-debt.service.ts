@@ -24,17 +24,16 @@ export class UpdateDebtService {
         throw new MyServicesError('Debt not found', HttpStatus.NOT_FOUND);
       }
 
-      // ----- Calculate the new payment -----
+      // ----- Calculate the new payment, updated amount paid and amount remaining -----
       const newPayment: number = data.amountPaid ?? 0;
 
-      // ----- Calculate the updated amount paid -----
       const updatedAmountPaid =
         Number(existingDebt.amountPaid ?? 0) + newPayment;
 
-      // ----- Calculate the amount remaining -----
       const amountRemaining =
         Number(existingDebt.amountTTC) - updatedAmountPaid;
 
+      // check if the debt is paid
       const statePaid = updatedAmountPaid >= Number(existingDebt.amountTTC);
 
       // ----- Update the debt -----
@@ -46,8 +45,34 @@ export class UpdateDebtService {
           ...data,
           amountPaid: updatedAmountPaid,
           amountRemaining: amountRemaining,
-          state: statePaid ? DebtState.PAID : DebtState.PENDING,
+          state:
+            data.state ??
+            (statePaid
+              ? DebtState.PAID
+              : (existingDebt.state ?? DebtState.PENDING)),
           updatedAt: new Date(),
+        },
+        select: {
+          id: true,
+          invoiceNumber: true,
+          amountHT: true,
+          amountTTC: true,
+          amountPaid: true,
+          amountRemaining: true,
+          amountOverdue: true,
+          dueDate: true,
+          state: true,
+          notes: true,
+          lastReminderSentAt: true,
+          createdAt: true,
+          updatedAt: true,
+          debtor: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
         },
       });
 

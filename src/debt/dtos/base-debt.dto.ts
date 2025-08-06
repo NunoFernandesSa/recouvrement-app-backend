@@ -10,6 +10,7 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import { DebtState } from 'generated/prisma';
 
 export class BaseDebtDto {
   @IsString()
@@ -34,7 +35,6 @@ export class BaseDebtDto {
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
-  @Min(0)
   amountPaid?: number;
 
   @IsOptional()
@@ -52,6 +52,9 @@ export class BaseDebtDto {
   @IsDate()
   @Type(() => Date)
   dueDate: Date;
+
+  @IsOptional()
+  state?: DebtState;
 
   @IsOptional()
   @IsArray()
