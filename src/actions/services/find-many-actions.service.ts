@@ -5,9 +5,23 @@ import { PrismaService } from 'src/prisma.service';
 import { ActionResponseDto } from '../dtos/action-response.dto';
 
 @Injectable()
+/**
+ * Service responsible for finding many actions in the system.
+ * Handles the retrieval of action records with associated user and debtor relationships.
+ *
+ * @class FindManyActionsService
+ * @description Provides functionality to find many actions with proper error handling and data validation
+ */
 export class FindManyActionsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Retrieves multiple actions from the system
+   *
+   * @description Fetches all actions from the database with their basic properties
+   * @returns Promise<ActionResponseDto[]> Array of action objects transformed into DTOs
+   * @throws {MyServicesError} When no actions are found (404) or on server errors (500)
+   */
   async findManyActions(): Promise<ActionResponseDto[]> {
     try {
       const existingActions = await this.prisma.action.findMany({

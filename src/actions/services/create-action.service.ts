@@ -7,12 +7,15 @@ import { ActionResponseDto } from '../dtos/action-response.dto';
 import { ActionState } from 'generated/prisma';
 
 @Injectable()
+/**
+ * Service responsible for creating new actions in the system.
+ * Handles the creation of action records with associated user and debtor relationships.
+ *
+ * @class CreateActionService
+ * @description Provides functionality to create new actions with proper error handling and data validation
+ */
 export class CreateActionService {
   constructor(private readonly prisma: PrismaService) {}
-  /**
-   * Service responsible for creating new actions in the system
-   * @class CreateActionService
-   */
 
   /**
    * Creates a new action for a given user
