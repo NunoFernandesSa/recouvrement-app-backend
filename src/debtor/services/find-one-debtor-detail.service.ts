@@ -14,14 +14,18 @@ export class FindOneDebtorDetailService {
    */
 
   /**
-   * Retrieves detailed information for a single debtor by ID
+   * Retrieves detailed information for a single debtor by ID, including associated client, debt and actions
    *
    * @param {string} id - Unique identifier of the debtor
-   * @returns {Promise<DebtorResponseDto>} Detailed debtor information including associated client, debt and actions
+   * @returns {Promise<DebtorResponseDto>} Object containing:
+   * - Basic debtor information (id, reference, name, contact details, etc.)
+   * - Associated client details (id, reference, name, email)
+   * - Linked debt information (id, state, invoice number)
+   * - Related actions (id, title, description, state)
    *
    * @throws {MyServicesError}
-   * - HttpStatus.NOT_FOUND if debtor does not exist
-   * - HttpStatus.INTERNAL_SERVER_ERROR if database query fails
+   * - HttpStatus.NOT_FOUND if debtor with given ID does not exist
+   * - HttpStatus.INTERNAL_SERVER_ERROR if database query fails or other errors occur
    */
   async findOneDebtorDetail(id: string): Promise<DebtorResponseDto> {
     try {
@@ -51,6 +55,7 @@ export class FindOneDebtorDetailService {
               id: true,
               internalRef: true,
               name: true,
+              email: true,
             },
           },
           debt: {
