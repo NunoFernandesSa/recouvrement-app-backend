@@ -5,6 +5,7 @@ import { CreateActionService } from './services/create-action.service';
 import { PrismaService } from 'src/prisma.service';
 import { FindManyActionsService } from './services/find-many-actions.service';
 import { FindOneActionService } from './services/find-one-action.service';
+import { FindOneActionDetailService } from './services/find-one-action-detail.service';
 
 @Module({
   controllers: [ActionsController],
@@ -13,6 +14,7 @@ import { FindOneActionService } from './services/find-one-action.service';
     CreateActionService,
     FindManyActionsService,
     FindOneActionService,
+    FindOneActionDetailService,
     PrismaService,
   ],
   exports: [ActionsService],

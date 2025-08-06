@@ -38,4 +38,11 @@ export class ActionsController {
   async findOne(@Param('id') id: string): Promise<ActionResponseDto> {
     return this.actionsService.findOneAction(id);
   }
+
+  @Get(':id/detail')
+  async findOneActionDetail(
+    @Param('id') id: string,
+  ): Promise<ActionResponseDto> {
+    return this.actionsService.findOneActionDetail(id);
+  }
 }

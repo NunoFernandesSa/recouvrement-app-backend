@@ -4,6 +4,7 @@ import { FindManyActionsService } from './services/find-many-actions.service';
 import { CreateActionDto } from './dtos/create-action.dto';
 import { ActionResponseDto } from './dtos/action-response.dto';
 import { FindOneActionService } from './services/find-one-action.service';
+import { FindOneActionDetailService } from './services/find-one-action-detail.service';
 
 @Injectable()
 export class ActionsService {
@@ -11,6 +12,7 @@ export class ActionsService {
     private readonly createActionService: CreateActionService,
     private readonly findManyActionsService: FindManyActionsService,
     private readonly findOneActionService: FindOneActionService,
+    private readonly findOneActionDetailService: FindOneActionDetailService,
   ) {}
 
   async createAction(
@@ -26,5 +28,9 @@ export class ActionsService {
 
   async findOneAction(id: string): Promise<ActionResponseDto> {
     return this.findOneActionService.findOneAction(id);
+  }
+
+  async findOneActionDetail(id: string): Promise<ActionResponseDto> {
+    return this.findOneActionDetailService.findOneActionDetail(id);
   }
 }
