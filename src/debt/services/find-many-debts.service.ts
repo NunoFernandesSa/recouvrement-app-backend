@@ -25,13 +25,6 @@ export class FindManyDebtsService {
           lastReminderSentAt: true,
           createdAt: true,
           updatedAt: true,
-          debtor: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
         },
       });
 
