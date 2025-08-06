@@ -53,6 +53,17 @@ export class ClientsController {
   }
 
   @ApiOperation({
+    summary: 'Get a client detail by ID',
+    description: 'Get a client detail by ID for the current user',
+  })
+  @Get(':id/detail')
+  async findOneDetail(
+    @Param('id') id: string,
+  ): Promise<CreateClientResponseDto> {
+    return this.clientsService.findOneDetail(id);
+  }
+
+  @ApiOperation({
     summary: 'Update a client by ID',
     description: 'Update a client by ID for the current user',
   })

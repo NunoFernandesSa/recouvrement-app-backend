@@ -14,13 +14,18 @@ export class FindOneClientDetailService {
    */
 
   /**
-   * Retrieves detailed information for a single client by their ID
+   * Retrieves detailed information for a single client by their ID, including associated debtor and user data
    * @param id - The unique identifier of the client to retrieve
-   * @returns A CreateClientResponseDto object containing the client's complete information
+   * @returns A CreateClientResponseDto object containing the client's complete information including:
+   * - Basic client details (name, contact info, address)
+   * - Business information (siret, type)
+   * - Associated debtor details (id, name, email)
+   * - Associated user details (id, name, email)
+   * - Timestamps (created, updated)
    * @throws HttpException with 404 status if no client is found with the given ID
    * @throws MyServicesError if a database or internal error occurs during the query
    */
-  async findOneClientDetail(id: string) {
+  async findOneClientDetail(id: string): Promise<CreateClientResponseDto> {
     try {
       // Find the client by ID in the database
       const existingClient = await this.prisma.client.findUnique({

@@ -36,7 +36,7 @@ export class ClientsService {
     return this.findOneClientService.findOneClient(id);
   }
 
-  async findOneDetail(id: string): Promise<any> {
+  async findOneDetail(id: string): Promise<CreateClientResponseDto> {
     return this.findOneClientDetailService.findOneClientDetail(id);
   }
 
