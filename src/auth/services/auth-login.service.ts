@@ -1,22 +1,15 @@
-import {
-  forwardRef,
-  HttpStatus,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { isPasswordValid } from 'src/utils/is-password-valid';
 import { LoginDto } from '../dtos/login.dto';
-import { AuthService } from '../auth.service';
 import MyServicesError from 'src/errors/my-services.error';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthLoginService {
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
   ) {}
 
   /**
@@ -26,15 +19,15 @@ export class AuthLoginService {
    * @throws {UnauthorizedException} If the credentials are invalid, user doesn't exist,
    *         user is inactive, or password is incorrect
    */
-  async login(authBody: LoginDto): Promise<any> {
+  async login(dto: LoginDto): Promise<any> {
     // ----- Validate the user credentials -----
     try {
       // Find the user by email
       const existingUser = await this.prisma.user.findUnique({
-        where: { email: authBody.email },
+        where: { email: dto.email },
       });
 
-      // Check if the user exists
+      // Check the user exi ifsts
       if (!existingUser) {
         throw new UnauthorizedException('This user does not exist');
       }
@@ -46,7 +39,7 @@ export class AuthLoginService {
 
       // Check if the password is correct
       const isThisPasswordValid = await isPasswordValid(
-        authBody.password,
+        dto.password,
         existingUser.password,
       );
 
@@ -55,19 +48,23 @@ export class AuthLoginService {
         throw new UnauthorizedException('Invalid password');
       }
 
-      // Call authService to generate the 2 tokens
-      const tokens = await this.authService.getTokens(existingUser.id);
+      // Generate the 2 tokens
+      const payload = { email: existingUser.email, sub: existingUser.id };
+      const accessToken: string = this.jwtService.sign(payload);
+      const refreshToken: string = this.jwtService.sign(payload, {
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: '5d',
+      });
 
-      // Save the hashed refresh token
-      await this.authService.updateRefreshToken(
-        existingUser.id,
-        tokens.refreshToken,
-      );
+      // send refresh token to BDD
+      await this.prisma.user.update({
+        where: { id: existingUser.id },
+        data: { refreshToken: refreshToken },
+      });
 
       return {
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-        userId: existingUser.id,
+        access_token: accessToken,
+        refresh_token: refreshToken,
       };
     } catch (error) {
       throw new MyServicesError(

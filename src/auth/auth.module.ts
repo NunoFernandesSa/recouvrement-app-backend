@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserModule } from 'src/user/user.module';
@@ -17,7 +17,6 @@ import { VerifyUserService } from './services/verifyUser.service';
 @Module({
   imports: [
     PassportModule,
-    forwardRef(() => AuthModule),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_ACCESS_SECRET,
