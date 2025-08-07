@@ -1,76 +1,44 @@
-import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Response } from 'express';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { isPasswordValid } from 'src/utils/is-password-valid';
-import { LoginDto } from '../dtos/login.dto';
-import MyServicesError from 'src/errors/my-services.error';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'generated/prisma';
+import { ConfigService } from '@nestjs/config';
+import { TokenPayload } from '../interface/token-payload.interface';
 
 @Injectable()
 export class AuthLoginService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
-  /**
-   * Authenticates a user with their email and password
-   * @param authBody - The login credentials containing email and password
-   * @returns A promise that resolves to an object containing the JWT access token
-   * @throws {UnauthorizedException} If the credentials are invalid, user doesn't exist,
-   *         user is inactive, or password is incorrect
-   */
-  async login(dto: LoginDto): Promise<any> {
-    // ----- Validate the user credentials -----
-    try {
-      // Find the user by email
-      const existingUser = await this.prisma.user.findUnique({
-        where: { email: dto.email },
-      });
+  async login(user: User, response: Response) {
+    const expiresAccesToken = new Date();
+    expiresAccesToken.setMilliseconds(
+      expiresAccesToken.getTime() +
+        parseInt(
+          this.configService.getOrThrow<string>(
+            'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+          ),
+        ),
+    );
 
-      // Check the user exi ifsts
-      if (!existingUser) {
-        throw new UnauthorizedException('This user does not exist');
-      }
+    const tokenPayload: TokenPayload = {
+      userId: user.id,
+    };
+    const accessToken: string = this.jwtService.sign(tokenPayload, {
+      secret: this.configService.getOrThrow<string>('JWT_ACCESS_TOKEN_SECRET'),
+      expiresIn: `${this.configService.getOrThrow<string>(
+        'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+      )}ms`,
+    });
 
-      // Check if the user is active
-      if (!existingUser.isActive) {
-        throw new UnauthorizedException('This user is not active');
-      }
-
-      // Check if the password is correct
-      const isThisPasswordValid = await isPasswordValid(
-        dto.password,
-        existingUser.password,
-      );
-
-      // if password is not valid, throw an error
-      if (!isThisPasswordValid) {
-        throw new UnauthorizedException('Invalid password');
-      }
-
-      // Generate the 2 tokens
-      const payload = { email: existingUser.email, sub: existingUser.id };
-      const accessToken: string = this.jwtService.sign(payload);
-      const refreshToken: string = this.jwtService.sign(payload, {
-        secret: process.env.JWT_REFRESH_SECRET,
-        expiresIn: '5d',
-      });
-
-      // send refresh token to BDD
-      await this.prisma.user.update({
-        where: { id: existingUser.id },
-        data: { refreshToken: refreshToken },
-      });
-
-      return {
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      };
-    } catch (error) {
-      throw new MyServicesError(
-        error instanceof Error ? error.message : 'Invalid credentials',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    response.cookie('Authorization', accessToken, {
+      httpOnly: true,
+      secure: this.configService.get('NODE_ENV') === 'production',
+      expires: expiresAccesToken,
+    });
   }
 }

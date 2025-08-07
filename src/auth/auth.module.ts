@@ -11,13 +11,14 @@ import { RefreshTokenGuard } from './guards/jwt-refresh.guard';
 import { PassportModule } from '@nestjs/passport';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { VerifyUserService } from './services/verifyUser.service';
+import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
     PassportModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_ACCESS_SECRET,
+      secret: process.env.JWT_ACCESS_TOKEN_SECRET,
       signOptions: { expiresIn: '1m' },
     }),
     UserModule,
@@ -28,6 +29,7 @@ import { VerifyUserService } from './services/verifyUser.service';
     PrismaService,
     AuthLoginService,
     AuthRegisterService,
+    LocalStrategy,
     LocalAuthGuard,
     JwtAuthGuard,
     RefreshTokenGuard,
