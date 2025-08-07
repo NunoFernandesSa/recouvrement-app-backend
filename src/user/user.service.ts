@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { UserCreateService } from './services/user-create.service';
 import { UserReadManyService } from './services/user-read-many.service';
 import { UserReadOneService } from './services/user-read-one.service';
@@ -10,6 +10,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
 import { UserFindManyActionsService } from './services/user-find-many-actions.service';
 import { PrismaService } from 'src/prisma.service';
+import MyServicesError from 'src/errors/my-services.error';
 
 @Injectable()
 export class UserService {
@@ -28,11 +29,17 @@ export class UserService {
   }
 
   async getUser(email: string) {
-    return await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: {
         email,
       },
     });
+
+    if (!user) {
+      throw new MyServicesError('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return user;
   }
 
   async findAll(): Promise<GetUsersDto[]> {

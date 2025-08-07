@@ -16,7 +16,10 @@ export class VerifyUserService {
 
       const authenticated = await bcrypt.compare(password, user.password);
       if (!authenticated) {
-        throw new MyServicesError('Unauthorized', HttpStatus.UNAUTHORIZED);
+        throw new MyServicesError(
+          'Password not match',
+          HttpStatus.UNAUTHORIZED,
+        );
       }
       return user;
     } catch (error) {

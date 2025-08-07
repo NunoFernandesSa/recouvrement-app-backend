@@ -5,11 +5,9 @@ import { UserModule } from 'src/user/user.module';
 import { PrismaService } from 'src/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthLoginService } from './services/auth-login.service';
-import { JwtStrategy } from './strategies/jwt.strategy';
 import { AuthRegisterService } from './services/auth-register.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RefreshTokenGuard } from './guards/jwt-refresh.guard';
-import { RefreshTokenStrategy } from './strategies/jwt-refresh.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { VerifyUserService } from './services/verifyUser.service';
@@ -30,8 +28,6 @@ import { VerifyUserService } from './services/verifyUser.service';
     PrismaService,
     AuthLoginService,
     AuthRegisterService,
-    JwtStrategy,
-    RefreshTokenStrategy,
     LocalAuthGuard,
     JwtAuthGuard,
     RefreshTokenGuard,
