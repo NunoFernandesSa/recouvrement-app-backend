@@ -9,6 +9,7 @@ import { CreateUserResponseDto } from './dtos/create-user-response.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
 import { UserFindManyActionsService } from './services/user-find-many-actions.service';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class UserService {
@@ -19,10 +20,19 @@ export class UserService {
     private readonly updateUser: UserUpdateService,
     private readonly deleteUser: UserDeleteService,
     private readonly findManyActions: UserFindManyActionsService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async create(dto: CreateUserDto): Promise<CreateUserResponseDto> {
     return await this.createUser.createUser(dto);
+  }
+
+  async getUser(email: string) {
+    return await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
   }
 
   async findAll(): Promise<GetUsersDto[]> {

@@ -10,9 +10,13 @@ import { AuthRegisterService } from './services/auth-register.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RefreshTokenGuard } from './guards/jwt-refresh.guard';
 import { RefreshTokenStrategy } from './strategies/jwt-refresh.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { VerifyUserService } from './services/verifyUser.service';
 
 @Module({
   imports: [
+    PassportModule,
     forwardRef(() => AuthModule),
     JwtModule.register({
       global: true,
@@ -29,8 +33,10 @@ import { RefreshTokenStrategy } from './strategies/jwt-refresh.strategy';
     AuthRegisterService,
     JwtStrategy,
     RefreshTokenStrategy,
+    LocalAuthGuard,
     JwtAuthGuard,
     RefreshTokenGuard,
+    VerifyUserService,
   ],
   exports: [AuthService, JwtAuthGuard, RefreshTokenGuard],
 })

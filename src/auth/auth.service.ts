@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaService } from 'src/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { TokenPayload } from 'src/common/token-payload.interface';
+import { VerifyUserService } from './services/verifyUser.service';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,21 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly prisma: PrismaService,
+    private readonly verifyUserService: VerifyUserService,
   ) {}
+
+  /**
+   * Verifies a user's credentials by checking their email and password
+   * @param email - The user's email address
+   * @param password - The user's password in plain text
+   * @returns Promise containing the verification result
+   *
+   * @throws UnauthorizedException if credentials are invalid
+   *
+   */
+  async verifyUser(email: string, password: string) {
+    return await this.verifyUserService.verifyUser(email, password);
+  }
 
   /**
    * Authenticates a user by validating their login credentials
@@ -25,11 +40,6 @@ export class AuthService {
    *
    * @throws UnauthorizedException if credentials are invalid
    *
-   * @example
-   * ```typescript
-   * const loginDto = { email: 'user@example.com', password: 'password123' };
-   * const result = await authService.userLogin(loginDto);
-   * ```
    */
   async userLogin(dto: LoginDto): Promise<any> {
     return await this.authLoginService.login(dto);
@@ -93,10 +103,7 @@ export class AuthService {
     });
   }
 
-  async refreshTokens(
-    userId: string,
-    refreshToken: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  async refreshTokens(userId: string, refreshToken: string): Promise<any> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
     });
