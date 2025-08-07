@@ -1,7 +1,7 @@
 import { ActionsService } from './actions.service';
 import { CreateActionDto } from './dtos/create-action.dto';
 import { ActionResponseDto } from './dtos/action-response.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import {
   Body,
   Controller,

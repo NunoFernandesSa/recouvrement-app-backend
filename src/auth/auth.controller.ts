@@ -11,7 +11,8 @@ import {
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { ApiOperation } from '@nestjs/swagger';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { UserService } from 'src/user/user.service';
 import { RequestWithUserId } from 'src/common/requestWithUserId.interface';
 
@@ -42,5 +43,12 @@ export class AuthController {
     if ('user' in req) {
       return await this.userService.findOne(req.user.id);
     }
+  }
+
+  @UseGuards(JwtRefreshGuard)
+  @Post('refresh')
+  async refreshToken(@Req() req: RequestWithUserId): Promise<any> {
+    const user = req.user;
+    return this.authService.getTokens(user.id);
   }
 }

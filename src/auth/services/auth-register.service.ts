@@ -3,7 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { hashPassword } from 'src/utils/hash-password';
 import { LoginDto } from '../dtos/login.dto';
-import { UserPayload } from 'src/auth/jwt.strategy';
+import { UserPayload } from 'src/auth/strategies/jwt.strategy';
 
 @Injectable()
 export class AuthRegisterService {
@@ -12,6 +12,19 @@ export class AuthRegisterService {
     private readonly jwtService: JwtService,
   ) {}
 
+  /**
+   * Registers a new user by validating their credentials and creating a new user account
+   * @param authBody - The login credentials DTO containing username/email and password
+   * @returns Promise containing the authentication result (e.g. access token)
+   *
+   * @throws UnauthorizedException if credentials are invalid or user already exists
+   *
+   * @example
+   * ```typescript
+   * const registerDto = { email: 'user@example.com', password: 'password123' };
+   * const result = await authService.register(registerDto);
+   * ```
+   */
   async register(authBody: LoginDto): Promise<any> {
     // ----- Validate the user credentials -----
     try {

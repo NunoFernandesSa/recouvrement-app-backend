@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { DebtorService } from './debtor.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateDebtorDto } from './dtos/create-debtor.dto';
 import { UpdateDebtorDto } from './dtos/update-debtor.dto';
 import { DebtorResponseDto } from './dtos/debtor-response.dto';

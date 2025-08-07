@@ -1,15 +1,20 @@
-import { JwtService } from '@nestjs/jwt';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { isPasswordValid } from 'src/utils/is-password-valid';
 import { LoginDto } from '../dtos/login.dto';
-import { UserPayload } from 'src/auth/jwt.strategy';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class AuthLoginService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwtService: JwtService,
+    @Inject(forwardRef(() => AuthService))
+    private readonly authService: AuthService,
   ) {}
 
   /**
@@ -48,31 +53,20 @@ export class AuthLoginService {
         throw new UnauthorizedException('Invalid password');
       }
 
-      return await this.authenticateUser({
-        id: existingUser.id,
-      });
+      // Call authService to generate the 2 tokens
+      const tokens = await this.authService.getTokens(existingUser.id);
+
+      // Save the hashed refresh token
+      await this.authService.updateRefreshToken(
+        existingUser.id,
+        tokens.refreshToken,
+      );
+
+      return tokens;
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : 'Invalid credentials';
       throw new UnauthorizedException(message);
     }
-  }
-
-  // -----|||-------------------------|||----
-  // -----|||---- Private methods ----|||----
-  // -----|||-------------------------|||----
-  /**
-   * Authenticates a user and generates a JWT access token
-   * @param {UserPayload} payload - Object containing the user ID to authenticate
-   * @param {string} payload.id - The unique identifier of the user
-   * @returns {Promise<{access_token: string}>} A promise that resolves to an object containing the JWT access token
-   * @throws {UnauthorizedException} If the authentication process fails
-   */
-  async authenticateUser({
-    id: userId,
-  }: UserPayload): Promise<{ access_token: string }> {
-    const payload: UserPayload = { id: userId };
-    const token = await this.jwtService.signAsync(payload);
-    return { access_token: token };
   }
 }
