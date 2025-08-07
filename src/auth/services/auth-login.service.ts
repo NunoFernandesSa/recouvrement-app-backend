@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  HttpStatus,
   Inject,
   Injectable,
   UnauthorizedException,
@@ -8,6 +9,7 @@ import { PrismaService } from 'src/prisma.service';
 import { isPasswordValid } from 'src/utils/is-password-valid';
 import { LoginDto } from '../dtos/login.dto';
 import { AuthService } from '../auth.service';
+import MyServicesError from 'src/errors/my-services.error';
 
 @Injectable()
 export class AuthLoginService {
@@ -62,11 +64,16 @@ export class AuthLoginService {
         tokens.refreshToken,
       );
 
-      return tokens;
-    } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : 'Invalid credentials';
-      throw new UnauthorizedException(message);
+      return {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+        userId: existingUser.id,
+      };
+    } catch (error) {
+      throw new MyServicesError(
+        error instanceof Error ? error.message : 'Invalid credentials',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
   }
 }

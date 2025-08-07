@@ -1,57 +1,30 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
+// strategies/refresh-token.strategy.ts
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ConfigService } from '@nestjs/config';
+import { PassportStrategy } from '@nestjs/passport';
+import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
-import { PrismaService } from 'src/prisma.service';
-import * as bcrypt from 'bcrypt';
-import { UserPayload } from './jwt.strategy';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class JwtRefreshStrategy extends PassportStrategy(
+export class RefreshTokenStrategy extends PassportStrategy(
   Strategy,
   'jwt-refresh',
 ) {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly prisma: PrismaService,
-  ) {
+  constructor(configService: ConfigService) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: Request) => {
-          if (req?.headers?.authorization?.startsWith('Bearer ')) {
-            return req.headers.authorization.split(' ')[1];
-          }
-          return null;
-        },
-      ]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey:
-        configService.get<string>('JWT_REFRESH_SECRET') || 'default-secret',
+        configService.get<string>('JWT_ACCESS_SECRET') ?? 'default-secret',
       passReqToCallback: true,
     });
   }
 
-  async validate(req: Request, payload: UserPayload): Promise<UserPayload> {
-    const refreshToken = req.headers.authorization?.split(' ')[1];
-
-    const user = await this.prisma.user.findUnique({
-      where: { id: payload.id },
-    });
-
-    if (!user || !user.refreshToken) {
-      throw new UnauthorizedException('Refresh token not found');
+  validate(req: Request, payload: any) {
+    const authHeader = req.get('Authorization');
+    if (!authHeader) {
+      throw new Error('Authorization header is missing');
     }
-
-    if (refreshToken !== user.refreshToken) {
-      throw new UnauthorizedException('Invalid refresh token');
-    }
-
-    const isValid = await bcrypt.compare(refreshToken, user.refreshToken);
-
-    if (isValid === false) {
-      throw new UnauthorizedException('Invalid refresh token');
-    }
-
-    return { id: payload.id };
+    const refreshToken = authHeader.replace('Bearer', '').trim();
+    return { ...payload, refreshToken };
   }
 }

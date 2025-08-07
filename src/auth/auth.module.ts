@@ -7,9 +7,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthLoginService } from './services/auth-login.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { AuthRegisterService } from './services/auth-register.service';
-import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { RefreshTokenGuard } from './guards/jwt-refresh.guard';
+import { RefreshTokenStrategy } from './strategies/jwt-refresh.strategy';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_ACCESS_SECRET,
-      signOptions: { expiresIn: '1d' },
+      signOptions: { expiresIn: '1m' },
     }),
     UserModule,
   ],
@@ -28,10 +28,10 @@ import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
     AuthLoginService,
     AuthRegisterService,
     JwtStrategy,
-    JwtRefreshStrategy,
+    RefreshTokenStrategy,
     JwtAuthGuard,
-    JwtRefreshGuard,
+    RefreshTokenGuard,
   ],
-  exports: [AuthService, JwtAuthGuard, JwtRefreshGuard],
+  exports: [AuthService, JwtAuthGuard, RefreshTokenGuard],
 })
 export class AuthModule {}

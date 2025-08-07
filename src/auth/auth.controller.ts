@@ -1,20 +1,12 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { UserService } from 'src/user/user.service';
 import { RequestWithUserId } from 'src/common/requestWithUserId.interface';
+import { RefreshTokenGuard } from './guards/jwt-refresh.guard';
+import { RefreshTokenDto } from './dtos/refresh-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +16,6 @@ export class AuthController {
   ) {}
 
   // ----- login -----
-  @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({ summary: 'User login', description: 'User login' })
   async login(@Body() loginDto: LoginDto): Promise<any> {
@@ -45,10 +36,19 @@ export class AuthController {
     }
   }
 
-  @UseGuards(JwtRefreshGuard)
+  // @UseGuards(RefreshTokenGuard)
+  // @Post('refresh')
+  // async refreshToken(@Req() req: RequestWithUserId): Promise<any> {
+  //   const user = req.user;
+  //   return this.authService.getTokens(user.id);
+  // }
+
+  @UseGuards(RefreshTokenGuard)
   @Post('refresh')
-  async refreshToken(@Req() req: RequestWithUserId): Promise<any> {
-    const user = req.user;
-    return this.authService.getTokens(user.id);
+  async refreshTokens(
+    @Req() req: RequestWithUserId,
+    @Body() body: RefreshTokenDto,
+  ) {
+    return this.authService.refreshTokens(req.user.id, body.refreshToken);
   }
 }
