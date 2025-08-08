@@ -11,6 +11,7 @@ import { GetUsersDto } from './dtos/get-users.dto';
 import { UserFindManyActionsService } from './services/user-find-many-actions.service';
 import { PrismaService } from 'src/prisma.service';
 import MyServicesError from 'src/errors/my-services.error';
+import { Prisma } from 'generated/prisma';
 
 @Injectable()
 export class UserService {
@@ -28,11 +29,9 @@ export class UserService {
     return await this.createUser.createUser(dto);
   }
 
-  async getUser(email: string) {
+  async getUser(query: Prisma.UserWhereInput) {
     const user = await this.prisma.user.findFirst({
-      where: {
-        email,
-      },
+      where: query,
     });
 
     if (!user) {

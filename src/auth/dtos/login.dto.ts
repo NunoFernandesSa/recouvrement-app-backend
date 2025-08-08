@@ -1,7 +1,17 @@
 import { Expose } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class LoginDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
   @Expose()
   @IsNotEmpty()
   @IsEmail()

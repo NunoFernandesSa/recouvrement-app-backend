@@ -5,6 +5,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from 'generated/prisma';
 import { Response } from 'express';
+import { LoginDto } from './dtos/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -22,9 +23,11 @@ export class AuthController {
   }
 
   // ----- register -----
-  // @Post('register')
-  // @ApiOperation({ summary: 'User register', description: 'User register' })
-  // async register(@Body() loginDto: LoginDto): Promise<any> {
-  //   return await this.authService.userRegister(loginDto);
-  // }
+  @Post('register')
+  @ApiOperation({ summary: 'User register', description: 'User register' })
+  async register(
+    @Body() loginDto: LoginDto,
+  ): Promise<{ message: string; user: any }> {
+    return await this.authService.userRegister(loginDto);
+  }
 }

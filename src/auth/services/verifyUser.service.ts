@@ -9,7 +9,7 @@ export class VerifyUserService {
 
   async verifyUser(email: string, password: string) {
     try {
-      const user = await this.userService.getUser(email);
+      const user = await this.userService.getUser({ email });
 
       if (!user) {
         throw new MyServicesError(
