@@ -42,9 +42,8 @@ export class AuthLoginService {
    */
   async login(user: User, response: Response): Promise<void> {
     // ----- access token time -----
-    const expiresAccesToken = new Date();
-    expiresAccesToken.setMilliseconds(
-      expiresAccesToken.getTime() +
+    const expiresAccesToken = new Date(
+      Date.now() +
         parseInt(
           this.configService.getOrThrow<string>(
             'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
@@ -53,9 +52,8 @@ export class AuthLoginService {
     );
 
     // ----- refresh token time -----
-    const expiresRefreshToken = new Date();
-    expiresRefreshToken.setMilliseconds(
-      expiresRefreshToken.getTime() +
+    const expiresRefreshToken = new Date(
+      Date.now() +
         parseInt(
           this.configService.getOrThrow<string>(
             'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
