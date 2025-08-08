@@ -1,6 +1,5 @@
 import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dtos/login.dto';
 import { ApiOperation } from '@nestjs/swagger';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
@@ -23,9 +22,9 @@ export class AuthController {
   }
 
   // ----- register -----
-  @Post('register')
-  @ApiOperation({ summary: 'User register', description: 'User register' })
-  async register(@Body() loginDto: LoginDto): Promise<any> {
-    return await this.authService.userRegister(loginDto);
-  }
+  // @Post('register')
+  // @ApiOperation({ summary: 'User register', description: 'User register' })
+  // async register(@Body() loginDto: LoginDto): Promise<any> {
+  //   return await this.authService.userRegister(loginDto);
+  // }
 }
