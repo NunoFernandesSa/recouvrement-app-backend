@@ -40,4 +40,12 @@ export class UpdateUserDto extends PartialType(
     required: false,
   })
   role?: UserRole;
+
+  @IsOptional()
+  @ApiProperty({
+    description: 'User refresh token',
+    example: 'refresh-token',
+    required: false,
+  })
+  refreshToken?: string;
 }

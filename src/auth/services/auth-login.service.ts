@@ -4,6 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from 'generated/prisma';
 import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from '../interface/token-payload.interface';
+import { PrismaService } from 'src/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 /**
@@ -20,6 +22,7 @@ export class AuthLoginService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly prisma: PrismaService,
   ) {}
 
   /**
@@ -38,6 +41,7 @@ export class AuthLoginService {
    * 4. Sets the token in a secure HTTP-only cookie
    */
   async login(user: User, response: Response): Promise<void> {
+    // ----- access token time -----
     const expiresAccesToken = new Date();
     expiresAccesToken.setMilliseconds(
       expiresAccesToken.getTime() +
@@ -48,10 +52,22 @@ export class AuthLoginService {
         ),
     );
 
+    // ----- refresh token time -----
+    const expiresRefreshToken = new Date();
+    expiresRefreshToken.setMilliseconds(
+      expiresRefreshToken.getTime() +
+        parseInt(
+          this.configService.getOrThrow<string>(
+            'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+          ),
+        ),
+    );
+
     const tokenPayload: TokenPayload = {
       id: user.id,
     };
 
+    // ----- access token -----
     const accessToken: string = this.jwtService.sign(tokenPayload, {
       secret: this.configService.getOrThrow<string>('JWT_ACCESS_TOKEN_SECRET'),
       expiresIn: `${this.configService.getOrThrow<string>(
@@ -59,10 +75,35 @@ export class AuthLoginService {
       )}ms`,
     });
 
+    // ----- refresh token -----
+    const refreshToken = this.jwtService.sign(tokenPayload, {
+      secret: this.configService.getOrThrow<string>('JWT_REFRESH_TOKEN_SECRET'),
+      expiresIn: `${this.configService.getOrThrow<string>(
+        'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+      )}ms`,
+    });
+
+    const refreshTokenHashed = await bcrypt.hash(refreshToken, 10);
+
+    await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        refreshToken: refreshTokenHashed,
+      },
+    });
+
     response.cookie('Authentication', accessToken, {
       httpOnly: true,
       secure: this.configService.get('NODE_ENV') === 'production',
       expires: expiresAccesToken,
+    });
+
+    response.cookie('RefreshToken', refreshToken, {
+      httpOnly: true,
+      secure: this.configService.get('NODE_ENV') === 'production',
+      expires: expiresRefreshToken,
     });
   }
 }
