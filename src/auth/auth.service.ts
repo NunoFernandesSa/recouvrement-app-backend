@@ -5,6 +5,7 @@ import { User } from 'generated/prisma';
 import { Response } from 'express';
 import { AuthRegisterService } from './services/auth-register.service';
 import { LoginDto } from './dtos/login.dto';
+import { VerifyUserRefreshTokenService } from './services/verify-user-refresh-token.service';
 
 @Injectable()
 export class AuthService {
@@ -12,10 +13,18 @@ export class AuthService {
     private readonly authLoginService: AuthLoginService,
     private readonly authRegisterService: AuthRegisterService,
     private readonly verifyUserService: VerifyUserService,
+    private readonly verifyUserRefreshTokenService: VerifyUserRefreshTokenService,
   ) {}
 
   async verifyUser(email: string, password: string) {
     return await this.verifyUserService.verifyUser(email, password);
+  }
+
+  async verifyUserRefreshToken(refreshToken: string, userId: string) {
+    return await this.verifyUserRefreshTokenService.verifyUserRefreshToken(
+      refreshToken,
+      userId,
+    );
   }
 
   // ----- Login -----

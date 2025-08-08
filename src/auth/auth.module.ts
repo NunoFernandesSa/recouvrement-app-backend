@@ -13,6 +13,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { VerifyUserService } from './services/verifyUser.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { VerifyUserRefreshTokenService } from './services/verify-user-refresh-token.service';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     JwtAuthGuard,
     RefreshTokenGuard,
     VerifyUserService,
+    VerifyUserRefreshTokenService,
   ],
   exports: [AuthService, JwtAuthGuard, RefreshTokenGuard],
 })
