@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PrismaService } from 'src/prisma.service';
 import { TokenPayload } from '../interface/token-payload.interface';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
@@ -13,7 +13,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
 ) {
   constructor(
     configService: ConfigService,
-    private readonly prisma: PrismaService,
+    private readonly authService: AuthService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -25,5 +25,10 @@ export class JwtRefreshStrategy extends PassportStrategy(
     });
   }
 
-  async validate(req: Request, payload: TokenPayload) {}
+  async validate(req: Request, payload: TokenPayload) {
+    return this.authService.verifyUserRefreshToken(
+      req.cookies?.RefreshToken as string,
+      payload.id,
+    );
+  }
 }
