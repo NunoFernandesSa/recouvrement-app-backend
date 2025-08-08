@@ -6,6 +6,7 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from 'generated/prisma';
 import { Response } from 'express';
 import { LoginDto } from './dtos/login.dto';
+import { RefreshTokenGuard } from './guards/jwt-refresh.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -29,5 +30,15 @@ export class AuthController {
     @Body() loginDto: LoginDto,
   ): Promise<{ message: string; user: any }> {
     return await this.authService.userRegister(loginDto);
+  }
+
+  // ----- refresh token -----
+  @Post('refresh')
+  @UseGuards(RefreshTokenGuard)
+  async refreshToken(
+    @CurrentUser() user: User,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return await this.authService.userLogin(user, res);
   }
 }
