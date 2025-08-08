@@ -1,4 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { ActionResponseDto } from 'src/actions/dtos/action-response.dto';
 import MyServicesError from 'src/errors/my-services.error';
 import { PrismaService } from 'src/prisma.service';
 
@@ -36,7 +38,7 @@ export class UserFindManyActionsService {
         throw new MyServicesError('No actions found', HttpStatus.NOT_FOUND);
       }
 
-      return actions;
+      return plainToInstance(ActionResponseDto, actions);
     } catch (error) {
       throw new MyServicesError(
         error instanceof Error
