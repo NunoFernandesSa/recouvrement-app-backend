@@ -13,6 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
+import { Request } from 'express';
 
 @UseGuards(JwtAuthGuard)
 @Controller('actions')
