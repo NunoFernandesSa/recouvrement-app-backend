@@ -5,11 +5,14 @@ import { LoginDto } from '../dtos/login.dto';
 
 @Injectable()
 /**
- * Service responsible for handling user registration functionality
+ * Service handling user registration and account creation
  *
  * @class AuthRegisterService
- * @description This service provides methods to register new users in the system,
- * including validation of credentials and secure password storage.
+ * @description Manages new user registration process including:
+ * - Email validation
+ * - Password hashing and secure storage
+ * - User account creation
+ * - Duplicate account prevention
  */
 export class AuthRegisterService {
   constructor(private readonly prisma: PrismaService) {}
