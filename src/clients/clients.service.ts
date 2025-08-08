@@ -6,7 +6,7 @@ import { CreateClientService } from './services/client-create.service';
 import { Injectable } from '@nestjs/common';
 import { UpdateClientDto } from './dtos/update-client.dto';
 import { CreateClientDto } from './dtos/create-client.dto';
-import { RequestWithUserId } from 'src/common/requestWithUserId.interface';
+import { RequestWithUserId } from 'src/common/interface/requestWithUserId.interface';
 import { CreateClientResponseDto } from './dtos/create-client-response.dto';
 import { FindOneClientDetailService } from './services/find-one-client-detail.service';
 

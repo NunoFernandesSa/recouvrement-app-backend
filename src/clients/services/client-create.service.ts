@@ -5,7 +5,7 @@ import { CreateClientResponseDto } from '../dtos/create-client-response.dto';
 import { plainToInstance } from 'class-transformer';
 
 import { v4 as uuidv4 } from 'uuid';
-import { RequestWithUserId } from 'src/common/requestWithUserId.interface';
+import { RequestWithUserId } from 'src/common/interface/requestWithUserId.interface';
 import MyServicesError from 'src/errors/my-services.error';
 
 @Injectable()
